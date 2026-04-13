@@ -19,13 +19,6 @@ function loadFromProcess(): EnvVars {
 export function getEnv(): EnvVars {
 	if (cached) return cached;
 
-	try {
-		// eslint-disable-next-line @typescript-eslint/no-require-imports
-		const { env } = require("cloudflare:workers") as { env: EnvVars };
-		cached = env;
-		return cached;
-	} catch {
-		cached = loadFromProcess();
-		return cached;
-	}
+	cached = loadFromProcess();
+	return cached;
 }

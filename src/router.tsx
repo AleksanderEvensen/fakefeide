@@ -13,6 +13,15 @@ export function getRouter() {
 		scrollRestoration: true,
 		defaultPreload: "intent",
 		defaultPreloadStaleTime: 0,
+		rewrite: {
+			input: ({ url }) => {
+				const subdomain = url.hostname.split(".")[0];
+				if (subdomain === "auth" && !url.pathname.startsWith("/.well-known")) {
+					url.pathname = "/api/auth" + url.pathname;
+				}
+				return url;
+			},
+		},
 	});
 
 	setupRouterSsrQueryIntegration({ router, queryClient: context.queryClient });

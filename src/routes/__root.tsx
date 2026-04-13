@@ -6,7 +6,7 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 import appCss from "../styles.css?url";
 
-import type { QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
 	queryClient: QueryClient;
@@ -37,12 +37,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+	const { queryClient } = Route.useRouteContext();
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased selection:bg-[rgba(79,184,178,0.24)]">
+				<QueryClientProvider client={queryClient}>
 				{children}
 				<TanStackDevtools
 					config={{
@@ -56,6 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						TanStackQueryDevtools,
 					]}
 				/>
+				</QueryClientProvider>
 				<Scripts />
 			</body>
 		</html>

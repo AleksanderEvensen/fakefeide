@@ -50,6 +50,7 @@ src/
 ├── lib/
 │   ├── auth.ts              # Better Auth server config (OAuth provider, JWT, email/password)
 │   ├── auth-client.ts       # Better Auth React client
+│   ├── well-known.ts        # Metadata URL rewriter for subdomain routing
 │   └── utils.ts             # Shared utilities (cn helper)
 ├── routes/
 │   ├── __root.tsx            # Root layout (HTML shell, devtools, stylesheets)
@@ -74,6 +75,17 @@ The core purpose of this app is to act as an OAuth 2.0 / OIDC identity provider.
 - Scopes: `openid`, `profile`, `email`, `offline_access`
 - Login redirects to `/sign-in`, consent to `/consent`
 
+### URL Rewriting & Subdomain Routing
+
+In production, `auth.fakefeide.no` serves as the OAuth/OIDC endpoint. A TanStack Router URL rewrite in `src/router.tsx` maps `auth.` subdomain requests to the internal `/api/auth` path:
+
+- `auth.fakefeide.no/oauth2/authorize` → internally `/api/auth/oauth2/authorize`
+- `auth.fakefeide.no/.well-known/*` → no rewrite (served directly)
+
+The catch-all handler at `/api/auth/$` rewrites the request URL to include `/api/auth` before passing to Better Auth (see `withAuthBasePath` in `src/routes/api/auth/$.ts`).
+
+In local dev, no subdomain is used — requests go directly to `localhost:3000/api/auth/*`.
+
 ### Well-Known Endpoints
 
 Two server-side route handlers expose standard OIDC discovery metadata:
@@ -81,7 +93,7 @@ Two server-side route handlers expose standard OIDC discovery metadata:
 - `/.well-known/openid-configuration` — OpenID Connect discovery
 - `/.well-known/oauth-authorization-server` — OAuth 2.0 authorization server metadata
 
-Both set CORS headers for cross-origin access.
+Both set CORS headers and use `rewriteMetadataUrls` (`src/lib/well-known.ts`) to transform endpoint URLs — stripping the `/api/auth` prefix when served from the `auth.` subdomain so the metadata matches the public-facing URL structure.
 
 ### Auth API
 
@@ -114,6 +126,15 @@ bun run db:migrate     # Run Drizzle migrations
 bun run db:push        # Push schema changes directly
 bun run db:studio      # Open Drizzle Studio
 ```
+
+## Deployment & Domains
+
+Deployed to Cloudflare Workers. Two custom domains are configured in `wrangler.jsonc`:
+
+- `fakefeide.no` — main application (UI, sign-in, consent)
+- `auth.fakefeide.no` — OAuth/OIDC endpoints (mapped to `/api/auth` via URL rewrite)
+
+Cloudflare is the nameserver for `fakefeide.no`.
 
 ## Environment Variables
 

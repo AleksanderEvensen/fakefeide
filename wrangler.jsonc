@@ -4,4 +4,8 @@
 	"compatibility_date": "2025-09-02",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "@tanstack/react-start/server-entry",
+	"routes": [
+		{ "pattern": "fakefeide.no", "custom_domain": true },
+		{ "pattern": "auth.fakefeide.no", "custom_domain": true },
+	],
 }
