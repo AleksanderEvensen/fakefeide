@@ -7,6 +7,7 @@ dist-ssr
 .env.prod
 .nitro
 .tanstack
+.vercel
 .wrangler
 .output
 .vinxi

@@ -4,6 +4,7 @@ import { authClient } from "#/lib/auth-client";
 import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/consent")({
+	ssr: false,
 	component: Consent,
 	validateSearch: (search: Record<string, unknown>) => ({
 		client_id: (search.client_id as string) ?? "",

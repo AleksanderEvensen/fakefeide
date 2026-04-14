@@ -7,6 +7,7 @@ import { Label } from "#/components/ui/label";
 import { SEED_USERS, SEED_PASSWORD, INSTITUTIONS, ROLES, type SeedUser, type UserRole } from "#/db/seed-data";
 
 export const Route = createFileRoute("/sign-in")({
+	ssr: false,
 	component: SignIn,
 });
 
