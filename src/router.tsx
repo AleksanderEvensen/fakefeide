@@ -16,9 +16,7 @@ export function getRouter() {
 		rewrite: {
 			input: ({ url }) => {
 				const subdomain = url.hostname.split(".")[0];
-				if (subdomain === "auth" && !url.pathname.startsWith("/.well-known")) {
-					url.pathname = "/api/auth" + url.pathname;
-				} else if (subdomain === "groups-api") {
+				if (subdomain === "groups-api") {
 					url.pathname = "/api/groups" + url.pathname;
 				}
 				return url;

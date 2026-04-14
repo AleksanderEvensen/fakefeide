@@ -45,19 +45,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="font-sans antialiased selection:bg-[rgba(79,184,178,0.24)]">
 				<QueryClientProvider client={queryClient}>
-				{children}
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						TanStackQueryDevtools,
-					]}
-				/>
+					{children}
+					<TanStackDevtools
+						config={{
+							position: "bottom-right",
+						}}
+						plugins={[
+							{
+								name: "Tanstack Router",
+								render: <TanStackRouterDevtoolsPanel />,
+							},
+							TanStackQueryDevtools,
+						]}
+					/>
 				</QueryClientProvider>
 				<Scripts />
 			</body>

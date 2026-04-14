@@ -114,16 +114,80 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 		extra: j({ orgType: ["primary_and_lower_secondary"] }),
 	},
 	// Basis groups
-	{ id: G.elk1A, type: "fc:gogroup", displayName: "1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: basisExtra },
-	{ id: G.elk2A, type: "fc:gogroup", displayName: "2A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: basisExtra },
-	{ id: G.elk3A, type: "fc:gogroup", displayName: "3A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: basisExtra },
+	{
+		id: G.elk1A,
+		type: "fc:gogroup",
+		displayName: "1A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: basisExtra,
+	},
+	{
+		id: G.elk2A,
+		type: "fc:gogroup",
+		displayName: "2A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: basisExtra,
+	},
+	{
+		id: G.elk3A,
+		type: "fc:gogroup",
+		displayName: "3A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: basisExtra,
+	},
 	// Teaching groups
-	{ id: G.elkMatte1A, type: "fc:gogroup", displayName: "Matte 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
-	{ id: G.elkNorsk1A, type: "fc:gogroup", displayName: "Norsk 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
-	{ id: G.elkEng1A, type: "fc:gogroup", displayName: "Engelsk 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Engelsk", "ENG0009") },
-	{ id: G.elkMatte2A, type: "fc:gogroup", displayName: "Matte 2A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
+	{
+		id: G.elkMatte1A,
+		type: "fc:gogroup",
+		displayName: "Matte 1A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Matematikk fellesfag", "MAT0009"),
+	},
+	{
+		id: G.elkNorsk1A,
+		type: "fc:gogroup",
+		displayName: "Norsk 1A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Norsk", "NOR0009"),
+	},
+	{
+		id: G.elkEng1A,
+		type: "fc:gogroup",
+		displayName: "Engelsk 1A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Engelsk", "ENG0009"),
+	},
+	{
+		id: G.elkMatte2A,
+		type: "fc:gogroup",
+		displayName: "Matte 2A",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Matematikk fellesfag", "MAT0009"),
+	},
 	// Other
-	{ id: G.elkElevraad, type: "fc:gogroup", displayName: "Elevrådet", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: otherExtra },
+	{
+		id: G.elkElevraad,
+		type: "fc:gogroup",
+		displayName: "Elevrådet",
+		parentId: G.elgskinnet,
+		notBefore: NB,
+		notAfter: NA,
+		extra: otherExtra,
+	},
 
 	// ── Fjelltoppen ungdomsskole ─────────────────────────────────────────
 	{
@@ -134,11 +198,43 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 		extra: j({ orgType: ["primary_and_lower_secondary"] }),
 	},
 	// Basis groups
-	{ id: G.fjell8A, type: "fc:gogroup", displayName: "8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
-	{ id: G.fjell9A, type: "fc:gogroup", displayName: "9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
+	{
+		id: G.fjell8A,
+		type: "fc:gogroup",
+		displayName: "8A",
+		parentId: G.fjelltoppen,
+		notBefore: NB,
+		notAfter: NA,
+		extra: basisExtra,
+	},
+	{
+		id: G.fjell9A,
+		type: "fc:gogroup",
+		displayName: "9A",
+		parentId: G.fjelltoppen,
+		notBefore: NB,
+		notAfter: NA,
+		extra: basisExtra,
+	},
 	// Teaching groups
-	{ id: G.fjellMatte8A, type: "fc:gogroup", displayName: "Matte 8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
-	{ id: G.fjellNorsk9A, type: "fc:gogroup", displayName: "Norsk 9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
+	{
+		id: G.fjellMatte8A,
+		type: "fc:gogroup",
+		displayName: "Matte 8A",
+		parentId: G.fjelltoppen,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Matematikk fellesfag", "MAT0009"),
+	},
+	{
+		id: G.fjellNorsk9A,
+		type: "fc:gogroup",
+		displayName: "Norsk 9A",
+		parentId: G.fjelltoppen,
+		notBefore: NB,
+		notAfter: NA,
+		extra: teachingExtra("Norsk", "NOR0009"),
+	},
 
 	// ── University ──────────────────────────────────────────────────────
 	{
@@ -172,15 +268,44 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 	{ id: G.ks, type: "fc:fs:str", displayName: "Kompliserte studier", parentId: G.eku },
 
 	// ── Grep entries ────────────────────────────────────────────────────
-	{ id: G.grepMat, type: "fc:grep", displayName: "Matematikk fellesfag", public: true, extra: j({ grep_type: "fagkoder", code: "MAT0009" }) },
-	{ id: G.grepNor, type: "fc:grep", displayName: "Norsk", public: true, extra: j({ grep_type: "fagkoder", code: "NOR0009" }) },
-	{ id: G.grepEng, type: "fc:grep", displayName: "Engelsk", public: true, extra: j({ grep_type: "fagkoder", code: "ENG0009" }) },
+	{
+		id: G.grepMat,
+		type: "fc:grep",
+		displayName: "Matematikk fellesfag",
+		public: true,
+		extra: j({ grep_type: "fagkoder", code: "MAT0009" }),
+	},
+	{
+		id: G.grepNor,
+		type: "fc:grep",
+		displayName: "Norsk",
+		public: true,
+		extra: j({ grep_type: "fagkoder", code: "NOR0009" }),
+	},
+	{
+		id: G.grepEng,
+		type: "fc:grep",
+		displayName: "Engelsk",
+		public: true,
+		extra: j({ grep_type: "fagkoder", code: "ENG0009" }),
+	},
 
 	// ── Ad hoc groups ───────────────────────────────────────────────────
-	{ id: G.adHocAlpha, type: "voot:ad-hoc", displayName: "Prosjektgruppe Alpha", public: true, extra: j({ description: "Tverrfaglig prosjektgruppe" }) },
-	{ id: G.adHocBeta, type: "voot:ad-hoc", displayName: "Lesegruppe Beta", public: false, extra: j({ description: "Uformell lesegruppe" }) },
+	{
+		id: G.adHocAlpha,
+		type: "voot:ad-hoc",
+		displayName: "Prosjektgruppe Alpha",
+		public: true,
+		extra: j({ description: "Tverrfaglig prosjektgruppe" }),
+	},
+	{
+		id: G.adHocBeta,
+		type: "voot:ad-hoc",
+		displayName: "Lesegruppe Beta",
+		public: false,
+		extra: j({ description: "Uformell lesegruppe" }),
+	},
 ];
-
 
 // ── Memberships ─────────────────────────────────────────────────────────
 
@@ -189,19 +314,41 @@ const studentSchoolExtra = j({ primarySchool: true });
 const studentBasisExtra = j({ affiliation: "student", displayName: { nb: "Elev" } });
 const studentTeachingExtra = j({ affiliation: "student", displayName: { nb: "Elev" } });
 
-const teacherOrgExtra = j({ displayName: "Lærer", affiliation: ["member", "employee", "faculty"], primaryAffiliation: "faculty" });
+const teacherOrgExtra = j({
+	displayName: "Lærer",
+	affiliation: ["member", "employee", "faculty"],
+	primaryAffiliation: "faculty",
+});
 const teacherBasisExtra = j({ affiliation: "faculty", displayName: { nb: "Lærer" } });
 const teacherTeachingExtra = j({ affiliation: "faculty", displayName: { nb: "Lærer" } });
 
-const studentUniOrgExtra = j({ displayName: "Student", affiliation: ["member", "student"], primaryAffiliation: "student" });
+const studentUniOrgExtra = j({
+	displayName: "Student",
+	affiliation: ["member", "student"],
+	primaryAffiliation: "student",
+});
 const studentUniUnitExtra = j({ primaryOrgUnit: true });
 const studentProgramExtra = j({ active: true, displayName: "Student", fsroles: ["STUDENT"] });
-const studentCourseExtra = j({ active: true, displayName: "Student", fsroles: ["STUDENT"], subjectRelations: "undervisning" });
+const studentCourseExtra = j({
+	active: true,
+	displayName: "Student",
+	fsroles: ["STUDENT"],
+	subjectRelations: "undervisning",
+});
 
-const facultyUniOrgExtra = j({ displayName: "Førsteamanuensis", affiliation: ["member", "employee", "faculty"], primaryAffiliation: "faculty", title: ["Førsteamanuensis"] });
+const facultyUniOrgExtra = j({
+	displayName: "Førsteamanuensis",
+	affiliation: ["member", "employee", "faculty"],
+	primaryAffiliation: "faculty",
+	title: ["Førsteamanuensis"],
+});
 const facultyCourseExtra = j({ active: true, displayName: "Foreleser", fsroles: ["LÆRER"] });
 
-const adminOrgExtra = j({ displayName: "Administrator", affiliation: ["member", "employee"], primaryAffiliation: "employee" });
+const adminOrgExtra = j({
+	displayName: "Administrator",
+	affiliation: ["member", "employee"],
+	primaryAffiliation: "employee",
+});
 
 type Membership = typeof groupMemberships.$inferInsert;
 
@@ -221,7 +368,10 @@ function buildMemberships(): Membership[] {
 
 		// ── Class 1A — basis group (6 students) ─────────────────────────
 		...class1A.map((uid) => ({
-			groupId: G.elk1A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+			groupId: G.elk1A,
+			userId: uid,
+			basic: "member" as const,
+			extra: studentBasisExtra,
 		})),
 		// All 1A students in all three teaching groups
 		...class1A.flatMap((uid) => [
@@ -232,15 +382,24 @@ function buildMemberships(): Membership[] {
 
 		// ── Class 2A — basis group (2 students) ─────────────────────────
 		...class2A.map((uid) => ({
-			groupId: G.elk2A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+			groupId: G.elk2A,
+			userId: uid,
+			basic: "member" as const,
+			extra: studentBasisExtra,
 		})),
 		...class2A.map((uid) => ({
-			groupId: G.elkMatte2A, userId: uid, basic: "member" as const, extra: studentTeachingExtra,
+			groupId: G.elkMatte2A,
+			userId: uid,
+			basic: "member" as const,
+			extra: studentTeachingExtra,
 		})),
 
 		// ── Class 3A — basis group ──────────────────────────────────────
 		...class3A.map((uid) => ({
-			groupId: G.elk3A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+			groupId: G.elk3A,
+			userId: uid,
+			basic: "member" as const,
+			extra: studentBasisExtra,
 		})),
 
 		// Alf in Elevrådet
@@ -346,7 +505,9 @@ async function seed() {
 		await db.insert(groupMemberships).values(batch);
 	}
 
-	console.log(`Done! Inserted ${allGroups.length} groups, ${SEED_USERS.length} users, ${allMemberships.length} memberships.`);
+	console.log(
+		`Done! Inserted ${allGroups.length} groups, ${SEED_USERS.length} users, ${allMemberships.length} memberships.`,
+	);
 }
 
 seed().catch((err) => {

@@ -19,21 +19,13 @@ app.get("/:domain/groups", async (c) => {
 	const orgId = `fc:org:${domain}`;
 
 	// 2-level child lookup
-	const directChildren = await db
-		.select()
-		.from(groups)
-		.where(eq(groups.parentId, orgId))
-		.all();
+	const directChildren = await db.select().from(groups).where(eq(groups.parentId, orgId)).all();
 
 	const directChildIds = directChildren.map((g) => g.id);
 
 	let grandChildren: typeof directChildren = [];
 	if (directChildIds.length > 0) {
-		grandChildren = await db
-			.select()
-			.from(groups)
-			.where(inArray(groups.parentId, directChildIds))
-			.all();
+		grandChildren = await db.select().from(groups).where(inArray(groups.parentId, directChildIds)).all();
 	}
 
 	let allGroups = [...directChildren, ...grandChildren];

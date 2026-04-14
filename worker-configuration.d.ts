@@ -20,7 +20,9 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "BETTER_AUTH_URL" | "BETTER_AUTH_SECRET" | "TURSO_DATABASE_URL" | "TURSO_DATABASE_AUTH_TOKEN">> {}
+	interface ProcessEnv extends StringifyValues<
+		Pick<Cloudflare.Env, "BETTER_AUTH_URL" | "BETTER_AUTH_SECRET" | "TURSO_DATABASE_URL" | "TURSO_DATABASE_AUTH_TOKEN">
+	> {}
 }
 
 // Begin runtime types

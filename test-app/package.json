@@ -1,0 +1,12 @@
+{
+	"name": "fakefeide-test-app",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"test": "bun run test-auth-flow.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.0"
+	}
+}

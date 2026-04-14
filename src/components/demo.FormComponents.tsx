@@ -93,7 +93,9 @@ export function Select({
 			<ShadcnSelect.Select
 				name={field.name}
 				value={field.state.value}
-				onValueChange={(value) => { if (value !== null) field.handleChange(value) }}
+				onValueChange={(value) => {
+					if (value !== null) field.handleChange(value);
+				}}
 			>
 				<ShadcnSelect.SelectTrigger className="w-full">
 					<ShadcnSelect.SelectValue placeholder={placeholder} />

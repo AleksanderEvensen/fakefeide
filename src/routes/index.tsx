@@ -43,46 +43,26 @@ function EndpointCard({
 				onClick={() => setOpen(!open)}
 				className="flex w-full items-center gap-3 px-4 py-3 text-left"
 			>
-				<span
-					className={`shrink-0 rounded px-2 py-0.5 text-xs font-bold ${methodColors[method]}`}
-				>
-					{method}
-				</span>
-				<code className="min-w-0 flex-1 text-sm text-gray-800">
-					{path}
-				</code>
-				<span className="shrink-0 text-xs text-gray-400">
-					{open ? "\u25B2" : "\u25BC"}
-				</span>
+				<span className={`shrink-0 rounded px-2 py-0.5 text-xs font-bold ${methodColors[method]}`}>{method}</span>
+				<code className="min-w-0 flex-1 text-sm text-gray-800">{path}</code>
+				<span className="shrink-0 text-xs text-gray-400">{open ? "\u25B2" : "\u25BC"}</span>
 			</button>
 			{open && (
 				<div className="space-y-3 border-t border-gray-100 px-4 py-3">
 					<p className="text-sm text-gray-600">{description}</p>
 					{auth && (
 						<div>
-							<span className="text-xs font-semibold text-gray-500">
-								Authorization:
-							</span>
-							<span className="ml-1 text-xs text-gray-600">
-								{auth}
-							</span>
+							<span className="text-xs font-semibold text-gray-500">Authorization:</span>
+							<span className="ml-1 text-xs text-gray-600">{auth}</span>
 						</div>
 					)}
 					{params && params.length > 0 && (
 						<div>
-							<p className="mb-1 text-xs font-semibold text-gray-500">
-								Path parameters
-							</p>
+							<p className="mb-1 text-xs font-semibold text-gray-500">Path parameters</p>
 							<ul className="space-y-1">
 								{params.map((p) => (
-									<li
-										key={p.name}
-										className="text-sm text-gray-600"
-									>
-										<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-											{p.name}
-										</code>{" "}
-										&mdash; {p.description}
+									<li key={p.name} className="text-sm text-gray-600">
+										<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{p.name}</code> &mdash; {p.description}
 									</li>
 								))}
 							</ul>
@@ -90,24 +70,12 @@ function EndpointCard({
 					)}
 					{queryParams && queryParams.length > 0 && (
 						<div>
-							<p className="mb-1 text-xs font-semibold text-gray-500">
-								Query parameters
-							</p>
+							<p className="mb-1 text-xs font-semibold text-gray-500">Query parameters</p>
 							<ul className="space-y-1">
 								{queryParams.map((p) => (
-									<li
-										key={p.name}
-										className="text-sm text-gray-600"
-									>
-										<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-											{p.name}
-										</code>
-										{p.required && (
-											<span className="ml-1 text-xs text-red-500">
-												required
-											</span>
-										)}
-										{" "}&mdash; {p.description}
+									<li key={p.name} className="text-sm text-gray-600">
+										<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{p.name}</code>
+										{p.required && <span className="ml-1 text-xs text-red-500">required</span>} &mdash; {p.description}
 									</li>
 								))}
 							</ul>
@@ -115,9 +83,7 @@ function EndpointCard({
 					)}
 					{response && (
 						<div>
-							<p className="mb-1 text-xs font-semibold text-gray-500">
-								Example response
-							</p>
+							<p className="mb-1 text-xs font-semibold text-gray-500">Example response</p>
 							<CodeBlock>{response}</CodeBlock>
 						</div>
 					)}
@@ -127,13 +93,7 @@ function EndpointCard({
 	);
 }
 
-function SectionHeading({
-	id,
-	children,
-}: {
-	id: string;
-	children: React.ReactNode;
-}) {
+function SectionHeading({ id, children }: { id: string; children: React.ReactNode }) {
 	return (
 		<h2 id={id} className="text-xl font-bold text-gray-900">
 			{children}
@@ -148,8 +108,7 @@ function App() {
 			<div className="mb-10">
 				<h1 className="text-3xl font-bold text-gray-900">FakeFeide</h1>
 				<p className="mt-2 text-lg text-gray-600">
-					A fake Feide identity provider for testing and development.
-					OAuth 2.0 / OpenID Connect compliant.
+					A fake Feide identity provider for testing and development. OAuth 2.0 / OpenID Connect compliant.
 				</p>
 			</div>
 
@@ -157,38 +116,27 @@ function App() {
 			<section className="mb-10 space-y-3">
 				<SectionHeading id="overview">Overview</SectionHeading>
 				<p className="text-sm leading-relaxed text-gray-600">
-					FakeFeide provides a simulated Feide-like identity provider
-					so your application can authenticate users without needing
-					access to the real Feide service. It supports dynamic client
-					registration, the authorization code flow, and standard OIDC
-					discovery metadata.
+					FakeFeide provides a simulated Feide-like identity provider so your application can authenticate users without
+					needing access to the real Feide service. It supports dynamic client registration, the authorization code
+					flow, and standard OIDC discovery metadata.
 				</p>
 				<div className="grid gap-3 sm:grid-cols-3">
 					<div className="rounded-lg border border-gray-200 bg-white p-4">
-						<p className="text-sm font-semibold text-gray-900">
-							OAuth 2.0 / OIDC
-						</p>
+						<p className="text-sm font-semibold text-gray-900">OAuth 2.0 / OIDC</p>
 						<p className="mt-1 text-xs text-gray-500">
-							Authorization code flow with PKCE support, JWKS,
-							token introspection and revocation.
+							Authorization code flow with PKCE support, JWKS, token introspection and revocation.
 						</p>
 					</div>
 					<div className="rounded-lg border border-gray-200 bg-white p-4">
-						<p className="text-sm font-semibold text-gray-900">
-							Dynamic registration
-						</p>
+						<p className="text-sm font-semibold text-gray-900">Dynamic registration</p>
 						<p className="mt-1 text-xs text-gray-500">
-							Register OAuth clients at runtime without
-							authentication &mdash; ideal for dev/test workflows.
+							Register OAuth clients at runtime without authentication &mdash; ideal for dev/test workflows.
 						</p>
 					</div>
 					<div className="rounded-lg border border-gray-200 bg-white p-4">
-						<p className="text-sm font-semibold text-gray-900">
-							Groups API
-						</p>
+						<p className="text-sm font-semibold text-gray-900">Groups API</p>
 						<p className="mt-1 text-xs text-gray-500">
-							Feide-compatible groups API with organizations,
-							education groups, and membership data.
+							Feide-compatible groups API with organizations, education groups, and membership data.
 						</p>
 					</div>
 				</div>
@@ -198,21 +146,18 @@ function App() {
 			<section className="mb-10 space-y-3">
 				<SectionHeading id="quick-start">Quick start</SectionHeading>
 				<p className="text-sm text-gray-600">
-					Point your OIDC client at FakeFeide&apos;s discovery endpoint to
-					get started:
+					Point your OIDC client at FakeFeide&apos;s discovery endpoint to get started:
 				</p>
 				<CodeBlock>
 					{`# Discovery endpoint
-GET https://auth.fakefeide.no/.well-known/openid-configuration
+GET https://fakefeide.no/.well-known/openid-configuration
 
 # Or for local development
 GET http://localhost:3000/.well-known/openid-configuration`}
 				</CodeBlock>
-				<p className="text-sm text-gray-600">
-					Register a client dynamically:
-				</p>
+				<p className="text-sm text-gray-600">Register a client dynamically:</p>
 				<CodeBlock>
-					{`POST https://auth.fakefeide.no/oauth2/register
+					{`POST https://fakefeide.no/api/auth/oauth2/register
 Content-Type: application/json
 
 {
@@ -232,12 +177,8 @@ Content-Type: application/json
 					<table className="w-full text-left text-sm">
 						<thead className="border-b border-gray-200 bg-gray-50">
 							<tr>
-								<th className="px-4 py-2 font-semibold text-gray-700">
-									Scope
-								</th>
-								<th className="px-4 py-2 font-semibold text-gray-700">
-									Description
-								</th>
+								<th className="px-4 py-2 font-semibold text-gray-700">Scope</th>
+								<th className="px-4 py-2 font-semibold text-gray-700">Description</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-100">
@@ -245,35 +186,25 @@ Content-Type: application/json
 								<td className="px-4 py-2">
 									<code className="text-xs">openid</code>
 								</td>
-								<td className="px-4 py-2 text-gray-600">
-									OpenID Connect authentication
-								</td>
+								<td className="px-4 py-2 text-gray-600">OpenID Connect authentication</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-2">
 									<code className="text-xs">profile</code>
 								</td>
-								<td className="px-4 py-2 text-gray-600">
-									Access user name and profile info
-								</td>
+								<td className="px-4 py-2 text-gray-600">Access user name and profile info</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-2">
 									<code className="text-xs">email</code>
 								</td>
-								<td className="px-4 py-2 text-gray-600">
-									Access email address
-								</td>
+								<td className="px-4 py-2 text-gray-600">Access email address</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-2">
-									<code className="text-xs">
-										offline_access
-									</code>
+									<code className="text-xs">offline_access</code>
 								</td>
-								<td className="px-4 py-2 text-gray-600">
-									Issue refresh tokens for long-lived sessions
-								</td>
+								<td className="px-4 py-2 text-gray-600">Issue refresh tokens for long-lived sessions</td>
 							</tr>
 						</tbody>
 					</table>
@@ -282,19 +213,11 @@ Content-Type: application/json
 
 			{/* OIDC / OAuth endpoints */}
 			<section className="mb-10 space-y-3">
-				<SectionHeading id="oidc-endpoints">
-					OIDC / OAuth endpoints
-				</SectionHeading>
+				<SectionHeading id="oidc-endpoints">OIDC / OAuth endpoints</SectionHeading>
 				<p className="text-sm text-gray-600">
-					All OAuth/OIDC endpoints are served from{" "}
-					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-						auth.fakefeide.no
-					</code>{" "}
-					in production, or{" "}
-					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-						localhost:3000/api/auth
-					</code>{" "}
-					locally.
+					All OAuth/OIDC endpoints are served under{" "}
+					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">fakefeide.no/api/auth</code> in production, or{" "}
+					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">localhost:3000/api/auth</code> locally.
 				</p>
 				<div className="space-y-2">
 					<EndpointCard
@@ -302,11 +225,11 @@ Content-Type: application/json
 						path="/.well-known/openid-configuration"
 						description="OpenID Connect discovery document. Returns metadata about the identity provider including all endpoint URLs, supported scopes, grant types, and signing algorithms."
 						response={`{
-  "issuer": "https://auth.fakefeide.no",
-  "authorization_endpoint": "https://auth.fakefeide.no/oauth2/authorize",
-  "token_endpoint": "https://auth.fakefeide.no/oauth2/token",
-  "jwks_uri": "https://auth.fakefeide.no/jwks",
-  "registration_endpoint": "https://auth.fakefeide.no/oauth2/register",
+  "issuer": "https://fakefeide.no/api/auth",
+  "authorization_endpoint": "https://fakefeide.no/api/auth/oauth2/authorize",
+  "token_endpoint": "https://fakefeide.no/api/auth/oauth2/token",
+  "jwks_uri": "https://fakefeide.no/api/auth/jwks",
+  "registration_endpoint": "https://fakefeide.no/api/auth/oauth2/register",
   "scopes_supported": ["openid", "profile", "email", "offline_access"],
   ...
 }`}
@@ -410,40 +333,24 @@ Content-Type: application/json
 			<section className="mb-10 space-y-3">
 				<SectionHeading id="groups-api">Groups API</SectionHeading>
 				<p className="text-sm text-gray-600">
-					Feide-compatible groups API. All endpoints require a valid
-					Bearer token. Base path:{" "}
-					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-						/api/groups
-					</code>{" "}
-					locally, or use the dedicated subdomain{" "}
-					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-						groups-api.fakefeide.no
-					</code>{" "}
-					in production (which strips the{" "}
-					<code className="text-xs">/api/groups</code> prefix
-					automatically).
+					Feide-compatible groups API. All endpoints require a valid Bearer token. Base path:{" "}
+					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">/api/groups</code> locally, or use the dedicated
+					subdomain <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">groups-api.fakefeide.no</code> in
+					production (which strips the <code className="text-xs">/api/groups</code> prefix automatically).
 				</p>
 				<div className="rounded-md border border-blue-200 bg-blue-50 px-4 py-3">
-					<p className="text-sm text-blue-800">
-						In production, both paths work:
-					</p>
+					<p className="text-sm text-blue-800">In production, both paths work:</p>
 					<ul className="mt-1 space-y-0.5 text-sm text-blue-700">
 						<li>
-							<code className="text-xs">
-								fakefeide.no/api/groups/grouptypes
-							</code>
+							<code className="text-xs">fakefeide.no/api/groups/grouptypes</code>
 						</li>
 						<li>
-							<code className="text-xs">
-								groups-api.fakefeide.no/grouptypes
-							</code>
+							<code className="text-xs">groups-api.fakefeide.no/grouptypes</code>
 						</li>
 					</ul>
 				</div>
 
-				<h3 className="pt-2 text-sm font-semibold text-gray-700">
-					Group types
-				</h3>
+				<h3 className="pt-2 text-sm font-semibold text-gray-700">Group types</h3>
 				<div className="space-y-2">
 					<EndpointCard
 						method="GET"
@@ -458,9 +365,7 @@ Content-Type: application/json
 					/>
 				</div>
 
-				<h3 className="pt-2 text-sm font-semibold text-gray-700">
-					Current user (me)
-				</h3>
+				<h3 className="pt-2 text-sm font-semibold text-gray-700">Current user (me)</h3>
 				<div className="space-y-2">
 					<EndpointCard
 						method="GET"
@@ -490,9 +395,7 @@ Content-Type: application/json
 					/>
 				</div>
 
-				<h3 className="pt-2 text-sm font-semibold text-gray-700">
-					Groups
-				</h3>
+				<h3 className="pt-2 text-sm font-semibold text-gray-700">Groups</h3>
 				<div className="space-y-2">
 					<EndpointCard
 						method="GET"
@@ -557,15 +460,9 @@ Content-Type: application/json
 					/>
 				</div>
 
-				<h3 className="pt-2 text-sm font-semibold text-gray-700">
-					Organizations
-				</h3>
+				<h3 className="pt-2 text-sm font-semibold text-gray-700">Organizations</h3>
 				<p className="text-xs text-gray-500">
-					Requires{" "}
-					<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-						system-all-users
-					</code>{" "}
-					scope.
+					Requires <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">system-all-users</code> scope.
 				</p>
 				<div className="space-y-2">
 					<EndpointCard
@@ -641,96 +538,59 @@ Content-Type: application/json
 
 			{/* Auth flow */}
 			<section className="mb-10 space-y-3">
-				<SectionHeading id="auth-flow">
-					Authentication flow
-				</SectionHeading>
+				<SectionHeading id="auth-flow">Authentication flow</SectionHeading>
 				<div className="rounded-lg border border-gray-200 bg-white p-4">
 					<ol className="list-inside list-decimal space-y-2 text-sm text-gray-600">
 						<li>
-							Register a client via{" "}
-							<code className="text-xs">POST /oauth2/register</code>
+							Register a client via <code className="text-xs">POST /oauth2/register</code>
 						</li>
 						<li>
-							Redirect users to{" "}
-							<code className="text-xs">
-								/oauth2/authorize?response_type=code&client_id=...
-							</code>
+							Redirect users to <code className="text-xs">/oauth2/authorize?response_type=code&client_id=...</code>
 						</li>
 						<li>
 							User logs in at the{" "}
-							<a
-								href="/sign-in"
-								className="text-[#1f4698] underline"
-							>
+							<a href="/sign-in" className="text-[#1f4698] underline">
 								sign-in page
 							</a>{" "}
 							(or use a pre-seeded test account)
 						</li>
 						<li>User approves the consent screen</li>
+						<li>FakeFeide redirects back with an authorization code</li>
 						<li>
-							FakeFeide redirects back with an authorization code
+							Exchange the code for tokens via <code className="text-xs">POST /oauth2/token</code>
 						</li>
-						<li>
-							Exchange the code for tokens via{" "}
-							<code className="text-xs">POST /oauth2/token</code>
-						</li>
-						<li>
-							Use the access token to call the UserInfo or Groups
-							API
-						</li>
+						<li>Use the access token to call the UserInfo or Groups API</li>
 					</ol>
 				</div>
 			</section>
 
 			{/* Domains */}
 			<section className="space-y-3">
-				<SectionHeading id="domains">
-					Production domains
-				</SectionHeading>
+				<SectionHeading id="domains">Production domains</SectionHeading>
 				<div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
 					<table className="w-full text-left text-sm">
 						<thead className="border-b border-gray-200 bg-gray-50">
 							<tr>
-								<th className="px-4 py-2 font-semibold text-gray-700">
-									Domain
-								</th>
-								<th className="px-4 py-2 font-semibold text-gray-700">
-									Purpose
-								</th>
+								<th className="px-4 py-2 font-semibold text-gray-700">Domain</th>
+								<th className="px-4 py-2 font-semibold text-gray-700">Purpose</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-100">
 							<tr>
 								<td className="px-4 py-2">
-									<code className="text-xs">
-										fakefeide.no
-									</code>
+									<code className="text-xs">fakefeide.no</code>
 								</td>
 								<td className="px-4 py-2 text-gray-600">
-									Main application (this page, sign-in,
-									consent)
+									Main application, OAuth/OIDC endpoints (under <code className="text-xs">/api/auth</code>), sign-in,
+									consent
 								</td>
 							</tr>
 							<tr>
 								<td className="px-4 py-2">
-									<code className="text-xs">
-										auth.fakefeide.no
-									</code>
+									<code className="text-xs">groups-api.fakefeide.no</code>
 								</td>
 								<td className="px-4 py-2 text-gray-600">
-									OAuth/OIDC endpoints (authorize, token,
-									register, JWKS)
-								</td>
-							</tr>
-							<tr>
-								<td className="px-4 py-2">
-									<code className="text-xs">
-										groups-api.fakefeide.no
-									</code>
-								</td>
-								<td className="px-4 py-2 text-gray-600">
-									Groups API (rewrites to{" "}
-									<code className="text-xs">/api/groups</code>)
+									Groups API (rewrites to <code className="text-xs">/api/groups</code>)
 								</td>
 							</tr>
 						</tbody>

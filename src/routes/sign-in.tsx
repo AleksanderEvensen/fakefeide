@@ -4,14 +4,7 @@ import { authClient } from "#/lib/auth-client";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
-import {
-	SEED_USERS,
-	SEED_PASSWORD,
-	INSTITUTIONS,
-	ROLES,
-	type SeedUser,
-	type UserRole,
-} from "#/db/seed-data";
+import { SEED_USERS, SEED_PASSWORD, INSTITUTIONS, ROLES, type SeedUser, type UserRole } from "#/db/seed-data";
 
 export const Route = createFileRoute("/sign-in")({
 	component: SignIn,
@@ -47,8 +40,7 @@ function SignIn() {
 	const filteredUsers = useMemo(() => {
 		return SEED_USERS.filter((u) => {
 			if (roleFilter !== "all" && u.role !== roleFilter) return false;
-			if (institutionFilter !== "all" && u.institution !== institutionFilter)
-				return false;
+			if (institutionFilter !== "all" && u.institution !== institutionFilter) return false;
 			return true;
 		});
 	}, [roleFilter, institutionFilter]);
@@ -125,9 +117,7 @@ function SignIn() {
 			{/* ── Login card ─────────────────────────────────────────── */}
 			<div className="w-full max-w-lg rounded-lg bg-white shadow-md">
 				<div className="p-8 pb-0">
-					<h1 className="text-2xl font-bold text-gray-900">
-						Log in with FakeFeide
-					</h1>
+					<h1 className="text-2xl font-bold text-gray-900">Log in with FakeFeide</h1>
 
 					<div className="mt-4 flex items-center gap-3">
 						<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#1f4698]">
@@ -144,32 +134,20 @@ function SignIn() {
 								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
 							</svg>
 						</div>
-						<p className="text-sm text-gray-700">
-							You need to log in via FakeFeide to access this
-							service.
-						</p>
+						<p className="text-sm text-gray-700">You need to log in via FakeFeide to access this service.</p>
 					</div>
 
 					<hr className="mt-4 border-gray-300" />
 
 					<div className="mt-4">
-						<p className="text-sm font-medium text-gray-600">
-							Your affiliation
-						</p>
+						<p className="text-sm font-medium text-gray-600">Your affiliation</p>
 						<div className="mt-2 flex items-center gap-3">
 							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-[#1f4698]">
-								<span className="text-xs font-bold text-white">
-									FF
-								</span>
+								<span className="text-xs font-bold text-white">FF</span>
 							</div>
 							<div>
-								<p className="text-sm font-semibold text-gray-900">
-									FakeFeide
-								</p>
-								<button
-									type="button"
-									className="text-sm text-[#1f4698] underline"
-								>
+								<p className="text-sm font-semibold text-gray-900">FakeFeide</p>
+								<button type="button" className="text-sm text-[#1f4698] underline">
 									Change affiliation
 								</button>
 							</div>
@@ -179,16 +157,10 @@ function SignIn() {
 					<hr className="mt-4 border-gray-300" />
 				</div>
 
-				<form
-					onSubmit={isSignUp ? handleSignUp : handleSignIn}
-					className="space-y-4 p-8 pt-4"
-				>
+				<form onSubmit={isSignUp ? handleSignUp : handleSignIn} className="space-y-4 p-8 pt-4">
 					{isSignUp && (
 						<div className="space-y-1">
-							<Label
-								htmlFor="name"
-								className="text-sm text-gray-700"
-							>
+							<Label htmlFor="name" className="text-sm text-gray-700">
 								Name
 							</Label>
 							<Input
@@ -204,10 +176,7 @@ function SignIn() {
 					)}
 
 					<div className="space-y-1">
-						<Label
-							htmlFor="email"
-							className="text-sm text-gray-700"
-						>
+						<Label htmlFor="email" className="text-sm text-gray-700">
 							Email
 						</Label>
 						<Input
@@ -222,10 +191,7 @@ function SignIn() {
 					</div>
 
 					<div className="space-y-1">
-						<Label
-							htmlFor="password"
-							className="text-sm text-gray-700"
-						>
+						<Label htmlFor="password" className="text-sm text-gray-700">
 							Password
 						</Label>
 						<Input
@@ -241,22 +207,12 @@ function SignIn() {
 
 					{error && <p className="text-sm text-red-600">{error}</p>}
 
-					<Button
-						type="submit"
-						className="w-full bg-[#1f4698] hover:bg-[#183a80]"
-						disabled={loading}
-					>
-						{loading
-							? "Loading..."
-							: isSignUp
-								? "Create account"
-								: "Log in"}
+					<Button type="submit" className="w-full bg-[#1f4698] hover:bg-[#183a80]" disabled={loading}>
+						{loading ? "Loading..." : isSignUp ? "Create account" : "Log in"}
 					</Button>
 
 					<p className="text-center text-sm text-gray-500">
-						{isSignUp
-							? "Already have an account?"
-							: "Don't have an account?"}{" "}
+						{isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
 						<button
 							type="button"
 							onClick={() => {
@@ -278,15 +234,12 @@ function SignIn() {
 						className="flex w-full items-center justify-between py-3 text-sm text-gray-700"
 					>
 						<span>Do you need help?</span>
-						<span className="text-xl text-[#1f4698]">
-							{helpOpen ? "\u2212" : "+"}
-						</span>
+						<span className="text-xl text-[#1f4698]">{helpOpen ? "\u2212" : "+"}</span>
 					</button>
 					{helpOpen && (
 						<p className="pb-3 text-sm text-gray-600">
-							This is a fake Feide login page for testing
-							purposes. Enter any email and password to sign in,
-							or create a new account.
+							This is a fake Feide login page for testing purposes. Enter any email and password to sign in, or create a
+							new account.
 						</p>
 					)}
 				</div>
@@ -305,15 +258,10 @@ function SignIn() {
 			{/* ── Quick login card ───────────────────────────────────── */}
 			<div className="w-full max-w-lg rounded-lg bg-white shadow-md">
 				<div className="border-b border-gray-200 p-6 pb-4">
-					<h2 className="text-lg font-bold text-gray-900">
-						Quick login
-					</h2>
+					<h2 className="text-lg font-bold text-gray-900">Quick login</h2>
 					<p className="mt-1 text-sm text-gray-500">
 						Sign in instantly as a test user (password:{" "}
-						<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-							{SEED_PASSWORD}
-						</code>
-						)
+						<code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{SEED_PASSWORD}</code>)
 					</p>
 				</div>
 
@@ -323,11 +271,7 @@ function SignIn() {
 						<Label className="text-xs text-gray-500">Role</Label>
 						<select
 							value={roleFilter}
-							onChange={(e) =>
-								setRoleFilter(
-									e.target.value as UserRole | "all",
-								)
-							}
+							onChange={(e) => setRoleFilter(e.target.value as UserRole | "all")}
 							className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900"
 						>
 							<option value="all">All roles</option>
@@ -339,14 +283,10 @@ function SignIn() {
 						</select>
 					</div>
 					<div className="min-w-0 flex-1 space-y-1">
-						<Label className="text-xs text-gray-500">
-							Institution
-						</Label>
+						<Label className="text-xs text-gray-500">Institution</Label>
 						<select
 							value={institutionFilter}
-							onChange={(e) =>
-								setInstitutionFilter(e.target.value)
-							}
+							onChange={(e) => setInstitutionFilter(e.target.value)}
 							className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900"
 						>
 							<option value="all">All institutions</option>
@@ -362,9 +302,7 @@ function SignIn() {
 				{/* User list */}
 				<div className="divide-y divide-gray-100 px-6">
 					{filteredUsers.length === 0 && (
-						<p className="py-6 text-center text-sm text-gray-400">
-							No users match the selected filters.
-						</p>
+						<p className="py-6 text-center text-sm text-gray-400">No users match the selected filters.</p>
 					)}
 					{filteredUsers.map((u) => (
 						<button
@@ -381,25 +319,14 @@ function SignIn() {
 									.join("")}
 							</div>
 							<div className="min-w-0 flex-1">
-								<p className="truncate text-sm font-medium text-gray-900">
-									{u.name}
-								</p>
-								<p className="truncate text-xs text-gray-500">
-									{u.email}
-								</p>
+								<p className="truncate text-sm font-medium text-gray-900">{u.name}</p>
+								<p className="truncate text-xs text-gray-500">{u.email}</p>
 								<p className="truncate text-xs text-gray-400">
 									{u.institution}
-									{u.detail && (
-										<>
-											{" "}
-											&middot; {u.detail}
-										</>
-									)}
+									{u.detail && <> &middot; {u.detail}</>}
 								</p>
 							</div>
-							<span
-								className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[u.role]}`}
-							>
+							<span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${ROLE_COLORS[u.role]}`}>
 								{ROLE_LABELS[u.role]}
 							</span>
 						</button>

@@ -17,11 +17,7 @@ export const requireToken = createMiddleware<AuthEnv>(async (c, next) => {
 	const bearer = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 	if (!bearer) return c.json({ error: "unauthorized" }, 401);
 
-	const tokenRecord = await db
-		.select()
-		.from(oauthAccessToken)
-		.where(eq(oauthAccessToken.token, bearer))
-		.get();
+	const tokenRecord = await db.select().from(oauthAccessToken).where(eq(oauthAccessToken.token, bearer)).get();
 
 	if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
 		return c.json({ error: "unauthorized" }, 401);
@@ -39,8 +35,7 @@ export const requireUserToken = createMiddleware<AuthEnv>(async (c, next) => {
 
 export const requireSystemScope = createMiddleware<AuthEnv>(async (c, next) => {
 	const token = c.get("token");
-	const scopes: string[] =
-		typeof token.scopes === "string" ? JSON.parse(token.scopes) : (token.scopes ?? []);
+	const scopes: string[] = typeof token.scopes === "string" ? JSON.parse(token.scopes) : (token.scopes ?? []);
 	if (!scopes.includes("system-all-users")) {
 		return c.json({ error: "insufficient_scope" }, 403);
 	}
