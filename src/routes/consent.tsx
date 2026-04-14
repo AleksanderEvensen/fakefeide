@@ -37,10 +37,10 @@ function Consent() {
 		if (!client_id) return;
 
 		authClient.oauth2
-			.getPublicClient({ query: { client_id } })
-			.then(({ data }) => {
-				if (data) {
-					setClientInfo(data as unknown as OAuthClientInfo);
+			.publicClient({ query: { client_id } })
+			.then((result) => {
+				if ("data" in result && result.data) {
+					setClientInfo(result.data as unknown as OAuthClientInfo);
 				}
 			})
 			.catch(() => {
