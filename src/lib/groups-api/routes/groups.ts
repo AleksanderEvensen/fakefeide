@@ -6,6 +6,11 @@ import type { SQL } from "drizzle-orm";
 import { type AuthEnv, requireToken } from "../auth";
 import { formatGroup, formatMembership } from "../format";
 
+/** Escape special characters for use inside a SQL LIKE pattern. */
+function escapeLike(value: string): string {
+	return value.replace(/[%_\\]/g, (ch) => `\\${ch}`);
+}
+
 const app = new Hono<AuthEnv>();
 
 app.use(requireToken);
@@ -15,7 +20,7 @@ app.get("/", async (c) => {
 	const goType = c.req.query("go_type");
 	const grepCode = c.req.query("grep_code");
 	const orgunit = c.req.query("orgunit");
-	const showAll = c.req.query("showAll") !== undefined;
+	const showAll = c.req.query("showAll") === "true";
 
 	const hasFilters = goType || grepCode || orgunit;
 
@@ -31,9 +36,20 @@ app.get("/", async (c) => {
 	}
 
 	const conditions: SQL[] = [];
-	if (goType) conditions.push(like(groups.extra, `%"go_type":"${goType}"%`));
-	if (grepCode) conditions.push(like(groups.extra, `%"code":"${grepCode}"%`));
-	if (orgunit) conditions.push(eq(groups.parentId, orgunit));
+	if (goType) conditions.push(like(groups.extra, `%"go_type":"${escapeLike(goType)}"%`));
+	if (grepCode) conditions.push(like(groups.extra, `%"code":"${escapeLike(grepCode)}"%`));
+	if (orgunit) {
+		// The orgunit param may be a raw group ID, or prefixed with NO (org number)
+		// or U (unit code). Translate prefixes to the matching parentId pattern.
+		if (orgunit.startsWith("NO")) {
+			// Match any parent whose ID contains the org number as a unit suffix
+			conditions.push(like(groups.parentId, `%:unit:${escapeLike(orgunit)}%`));
+		} else if (orgunit.startsWith("U")) {
+			conditions.push(like(groups.parentId, `%:unit:${escapeLike(orgunit.slice(1))}%`));
+		} else {
+			conditions.push(eq(groups.parentId, orgunit));
+		}
+	}
 
 	const rows = await db
 		.select()
@@ -49,6 +65,7 @@ app.get("/", async (c) => {
 
 app.get("/:groupId{.+}/members", async (c) => {
 	const groupId = decodeURIComponent(c.req.param("groupId"));
+	const affiliationFilter = c.req.query("affiliation");
 
 	const rows = await db
 		.select({ user, membership: groupMemberships })
@@ -57,13 +74,21 @@ app.get("/:groupId{.+}/members", async (c) => {
 		.where(eq(groupMemberships.groupId, groupId))
 		.all();
 
-	return c.json(
-		rows.map((r) => ({
-			name: r.user.name,
-			userid_sec: [`feide:${r.user.email}`],
-			membership: formatMembership(r.membership),
-		})),
-	);
+	let result = rows.map((r) => ({
+		name: r.user.name,
+		userid_sec: [`feide:${r.user.email}`],
+		membership: formatMembership(r.membership),
+	}));
+
+	if (affiliationFilter) {
+		result = result.filter((r) => {
+			const aff = r.membership.affiliation;
+			if (Array.isArray(aff)) return aff.includes(affiliationFilter);
+			return aff === affiliationFilter;
+		});
+	}
+
+	return c.json(result);
 });
 
 app.get("/:groupId{.+}", async (c) => {

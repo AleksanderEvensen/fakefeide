@@ -2,34 +2,12 @@ import { inArray } from "drizzle-orm";
 import { auth } from "#/lib/auth";
 import { db } from "#/db";
 import * as schema from "./schema.ts";
+import { SEED_USERS, SEED_PASSWORD } from "./seed-data.ts";
 
 const { groups, groupMemberships, user, account } = schema;
 
-// ── User keys (resolved to real IDs after signup) ──────────────────────
-
-type UserKey = "alf" | "britt" | "carl" | "dina" | "erik" | "fiona" | "gustav" | "hanna" | "isak" | "julie" | "kari" | "lars" | "marte" | "nils";
-
-const SEED_USERS: { key: UserKey; name: string; email: string }[] = [
-	{ key: "alf", name: "Alf Berg", email: "alf.berg@elgskinnetskole.sunnvik.kommune.no" },
-	{ key: "britt", name: "Britt Dahle", email: "britt.dahle@elgskinnetskole.sunnvik.kommune.no" },
-	{ key: "carl", name: "Carl Eriksen", email: "carl.eriksen@elgskinnetskole.sunnvik.kommune.no" },
-	{ key: "dina", name: "Dina Fjeld", email: "dina.fjeld@elgskinnetskole.sunnvik.kommune.no" },
-	{ key: "erik", name: "Erik Grønn", email: "erik.gronn@fjelltoppenungdomsskole.sunnvik.kommune.no" },
-	{ key: "fiona", name: "Fiona Haugen", email: "fiona.haugen@fjelltoppenungdomsskole.sunnvik.kommune.no" },
-	{ key: "gustav", name: "Gustav Iversen", email: "gustav.iversen@eksempeluniversitetet.no" },
-	{ key: "hanna", name: "Hanna Johansen", email: "hanna.johansen@eksempeluniversitetet.no" },
-	{ key: "isak", name: "Isak Knutsen", email: "isak.knutsen@eksempeluniversitetet.no" },
-	{ key: "julie", name: "Julie Larsen", email: "julie.larsen@eksempeluniversitetet.no" },
-	{ key: "kari", name: "Kari Nordmann", email: "kari.nordmann@elgskinnetskole.sunnvik.kommune.no" },
-	{ key: "lars", name: "Lars Olsen", email: "lars.olsen@fjelltoppenungdomsskole.sunnvik.kommune.no" },
-	{ key: "marte", name: "Marte Pedersen", email: "marte.pedersen@eksempeluniversitetet.no" },
-	{ key: "nils", name: "Nils Svendsen", email: "nils.svendsen@sunnvik.kommune.no" },
-];
-
-const SEED_PASSWORD = "password123";
-
 // Populated during seed — maps user keys to their real IDs assigned by Better Auth
-const USER = {} as Record<UserKey, string>;
+const USER = {} as Record<string, string>;
 
 // ── Group IDs ───────────────────────────────────────────────────────────
 
@@ -37,9 +15,8 @@ const G = {
 	// School owner
 	sunnvik: "fc:org:sunnvik.kommune.no",
 
-	// Schools
+	// School — Elgskinnets skole
 	elgskinnet: "fc:org:sunnvik.kommune.no:unit:NO895395126",
-	fjelltoppen: "fc:org:sunnvik.kommune.no:unit:NO895395127",
 
 	// Elgskinnet basis groups
 	elk1A: "fc:gogroup:sunnvik.kommune.no:b:NO895395126:1A:2025-08-18:2026-06-20",
@@ -48,19 +25,23 @@ const G = {
 
 	// Elgskinnet teaching groups
 	elkMatte1A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:MATTE1A:2025-08-18:2026-06-20",
-	elkNorsk2A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:NORSK2A:2025-08-18:2026-06-20",
-	elkEng3A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:ENG3A:2025-08-18:2026-06-20",
+	elkNorsk1A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:NORSK1A:2025-08-18:2026-06-20",
+	elkEng1A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:ENG1A:2025-08-18:2026-06-20",
+	elkMatte2A: "fc:gogroup:sunnvik.kommune.no:u:NO895395126:MATTE2A:2025-08-18:2026-06-20",
 
 	// Elgskinnet other
 	elkElevraad: "fc:gogroup:sunnvik.kommune.no:a:NO895395126:ELEVRAAD:2025-08-18:2026-06-20",
 
+	// School — Fjelltoppen ungdomsskole
+	fjelltoppen: "fc:org:sunnvik.kommune.no:unit:NO895395127",
+
 	// Fjelltoppen basis groups
-	fjl8A: "fc:gogroup:sunnvik.kommune.no:b:NO895395127:8A:2025-08-18:2026-06-20",
-	fjl9A: "fc:gogroup:sunnvik.kommune.no:b:NO895395127:9A:2025-08-18:2026-06-20",
+	fjell8A: "fc:gogroup:sunnvik.kommune.no:b:NO895395127:8A:2025-08-18:2026-06-20",
+	fjell9A: "fc:gogroup:sunnvik.kommune.no:b:NO895395127:9A:2025-08-18:2026-06-20",
 
 	// Fjelltoppen teaching groups
-	fjlMatte8A: "fc:gogroup:sunnvik.kommune.no:u:NO895395127:MATTE8A:2025-08-18:2026-06-20",
-	fjlNorsk9A: "fc:gogroup:sunnvik.kommune.no:u:NO895395127:NORSK9A:2025-08-18:2026-06-20",
+	fjellMatte8A: "fc:gogroup:sunnvik.kommune.no:u:NO895395127:MATTE8A:2025-08-18:2026-06-20",
+	fjellNorsk9A: "fc:gogroup:sunnvik.kommune.no:u:NO895395127:NORSK9A:2025-08-18:2026-06-20",
 
 	// University
 	eku: "fc:org:eksempeluniversitetet.no",
@@ -70,7 +51,7 @@ const G = {
 	// Program / cohort / class
 	binfo: "fc:fs:fs:prg:eksempeluniversitetet.no:BINFO",
 	binfo2024H: "fc:fs:fs:kull:eksempeluniversitetet.no:BINFO:2024H",
-	binfoKlasseA: "fc:fs:fs:klasse:eksempeluniversitetet.no:BINFO:2024H:A",
+	binfo2024HA: "fc:fs:fs:klasse:eksempeluniversitetet.no:BINFO:2024H:A",
 
 	// Courses
 	in1000: "fc:fs:fs:emne:eksempeluniversitetet.no:IN1000:1",
@@ -138,12 +119,13 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 	{ id: G.elk3A, type: "fc:gogroup", displayName: "3A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: basisExtra },
 	// Teaching groups
 	{ id: G.elkMatte1A, type: "fc:gogroup", displayName: "Matte 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
-	{ id: G.elkNorsk2A, type: "fc:gogroup", displayName: "Norsk 2A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
-	{ id: G.elkEng3A, type: "fc:gogroup", displayName: "Engelsk 3A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Engelsk", "ENG0009") },
+	{ id: G.elkNorsk1A, type: "fc:gogroup", displayName: "Norsk 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
+	{ id: G.elkEng1A, type: "fc:gogroup", displayName: "Engelsk 1A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Engelsk", "ENG0009") },
+	{ id: G.elkMatte2A, type: "fc:gogroup", displayName: "Matte 2A", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
 	// Other
 	{ id: G.elkElevraad, type: "fc:gogroup", displayName: "Elevrådet", parentId: G.elgskinnet, notBefore: NB, notAfter: NA, extra: otherExtra },
 
-	// ── Fjelltoppen ungdomsskole ────────────────────────────────────────
+	// ── Fjelltoppen ungdomsskole ─────────────────────────────────────────
 	{
 		id: G.fjelltoppen,
 		type: "fc:org",
@@ -152,11 +134,11 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 		extra: j({ orgType: ["primary_and_lower_secondary"] }),
 	},
 	// Basis groups
-	{ id: G.fjl8A, type: "fc:gogroup", displayName: "8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
-	{ id: G.fjl9A, type: "fc:gogroup", displayName: "9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
+	{ id: G.fjell8A, type: "fc:gogroup", displayName: "8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
+	{ id: G.fjell9A, type: "fc:gogroup", displayName: "9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: basisExtra },
 	// Teaching groups
-	{ id: G.fjlMatte8A, type: "fc:gogroup", displayName: "Matte 8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
-	{ id: G.fjlNorsk9A, type: "fc:gogroup", displayName: "Norsk 9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
+	{ id: G.fjellMatte8A, type: "fc:gogroup", displayName: "Matte 8A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Matematikk fellesfag", "MAT0009") },
+	{ id: G.fjellNorsk9A, type: "fc:gogroup", displayName: "Norsk 9A", parentId: G.fjelltoppen, notBefore: NB, notAfter: NA, extra: teachingExtra("Norsk", "NOR0009") },
 
 	// ── University ──────────────────────────────────────────────────────
 	{
@@ -180,7 +162,7 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 	// Cohort
 	{ id: G.binfo2024H, type: "fc:fs:prg", displayName: "Kull 2024 Høst", parentId: G.binfo },
 	// Class
-	{ id: G.binfoKlasseA, type: "fc:fs:klasse", displayName: "Klasse A", parentId: G.binfo2024H },
+	{ id: G.binfo2024HA, type: "fc:fs:klasse", displayName: "Klasse A", parentId: G.binfo2024H },
 
 	// Courses
 	{ id: G.in1000, type: "fc:fs:emne", displayName: "Introduksjon til programmering", parentId: G.eku },
@@ -196,18 +178,20 @@ const allGroups: (typeof groups.$inferInsert)[] = [
 
 	// ── Ad hoc groups ───────────────────────────────────────────────────
 	{ id: G.adHocAlpha, type: "voot:ad-hoc", displayName: "Prosjektgruppe Alpha", public: true, extra: j({ description: "Tverrfaglig prosjektgruppe" }) },
-	{ id: G.adHocBeta, type: "voot:ad-hoc", displayName: "Studiegruppe Beta", public: false, extra: j({ description: "Uformell studiegruppe" }) },
+	{ id: G.adHocBeta, type: "voot:ad-hoc", displayName: "Lesegruppe Beta", public: false, extra: j({ description: "Uformell lesegruppe" }) },
 ];
 
 
 // ── Memberships ─────────────────────────────────────────────────────────
 
-const studentElkOrgExtra = j({ displayName: "Elev", affiliation: ["member", "student"], primaryAffiliation: "student" });
+const studentOrgExtra = j({ displayName: "Elev", affiliation: ["member", "student"], primaryAffiliation: "student" });
 const studentSchoolExtra = j({ primarySchool: true });
 const studentBasisExtra = j({ affiliation: "student", displayName: { nb: "Elev" } });
+const studentTeachingExtra = j({ affiliation: "student", displayName: { nb: "Elev" } });
 
-const teacherElkOrgExtra = j({ displayName: "Lærer", affiliation: ["member", "employee", "faculty"], primaryAffiliation: "faculty" });
+const teacherOrgExtra = j({ displayName: "Lærer", affiliation: ["member", "employee", "faculty"], primaryAffiliation: "faculty" });
 const teacherBasisExtra = j({ affiliation: "faculty", displayName: { nb: "Lærer" } });
+const teacherTeachingExtra = j({ affiliation: "faculty", displayName: { nb: "Lærer" } });
 
 const studentUniOrgExtra = j({ displayName: "Student", affiliation: ["member", "student"], primaryAffiliation: "student" });
 const studentUniUnitExtra = j({ primaryOrgUnit: true });
@@ -222,111 +206,102 @@ const adminOrgExtra = j({ displayName: "Administrator", affiliation: ["member", 
 type Membership = typeof groupMemberships.$inferInsert;
 
 function buildMemberships(): Membership[] {
-return [
-	// ── Elgskinnet students (Alf, Britt, Carl, Dina) ────────────────────
-	// School owner org
-	{ groupId: G.sunnvik, userId: USER.alf, basic: "member", extra: studentElkOrgExtra },
-	{ groupId: G.sunnvik, userId: USER.britt, basic: "member", extra: studentElkOrgExtra },
-	{ groupId: G.sunnvik, userId: USER.carl, basic: "member", extra: studentElkOrgExtra },
-	{ groupId: G.sunnvik, userId: USER.dina, basic: "member", extra: studentElkOrgExtra },
-	// School
-	{ groupId: G.elgskinnet, userId: USER.alf, basic: "member", extra: studentSchoolExtra },
-	{ groupId: G.elgskinnet, userId: USER.britt, basic: "member", extra: studentSchoolExtra },
-	{ groupId: G.elgskinnet, userId: USER.carl, basic: "member", extra: studentSchoolExtra },
-	{ groupId: G.elgskinnet, userId: USER.dina, basic: "member", extra: studentSchoolExtra },
-	// Basis groups: Alf & Britt in 1A, Carl in 2A, Dina in 3A
-	{ groupId: G.elk1A, userId: USER.alf, basic: "member", extra: studentBasisExtra },
-	{ groupId: G.elk1A, userId: USER.britt, basic: "member", extra: studentBasisExtra },
-	{ groupId: G.elk2A, userId: USER.carl, basic: "member", extra: studentBasisExtra },
-	{ groupId: G.elk3A, userId: USER.dina, basic: "member", extra: studentBasisExtra },
-	// Teaching groups: Alf in Matte 1A, Britt in Norsk 2A, Carl & Dina in Eng 3A
-	{ groupId: G.elkMatte1A, userId: USER.alf, basic: "member" },
-	{ groupId: G.elkNorsk2A, userId: USER.britt, basic: "member" },
-	{ groupId: G.elkEng3A, userId: USER.carl, basic: "member" },
-	{ groupId: G.elkEng3A, userId: USER.dina, basic: "member" },
-	// Alf in Elevrådet
-	{ groupId: G.elkElevraad, userId: USER.alf, basic: "member" },
+	const class1A = [USER.alf, USER.britt, USER.carl, USER.dina, USER.erik, USER.fiona];
+	const class2A = [USER.gustav, USER.hanna];
+	const class3A = [USER.alf]; // Alf also in 3A (double-enrolled for variety)
+	const allElkStudents = [...class1A, ...class2A];
+	const elkTeachers = [USER.kari, USER.lars, USER.marte];
 
-	// ── Fjelltoppen students (Erik, Fiona) ──────────────────────────────
-	// School owner org
-	{ groupId: G.sunnvik, userId: USER.erik, basic: "member", extra: studentElkOrgExtra },
-	{ groupId: G.sunnvik, userId: USER.fiona, basic: "member", extra: studentElkOrgExtra },
-	// School
-	{ groupId: G.fjelltoppen, userId: USER.erik, basic: "member", extra: studentSchoolExtra },
-	{ groupId: G.fjelltoppen, userId: USER.fiona, basic: "member", extra: studentSchoolExtra },
-	// Basis groups: Erik in 8A, Fiona in 9A
-	{ groupId: G.fjl8A, userId: USER.erik, basic: "member", extra: studentBasisExtra },
-	{ groupId: G.fjl9A, userId: USER.fiona, basic: "member", extra: studentBasisExtra },
-	// Teaching groups: Erik in Matte 8A, Fiona in Norsk 9A
-	{ groupId: G.fjlMatte8A, userId: USER.erik, basic: "member" },
-	{ groupId: G.fjlNorsk9A, userId: USER.fiona, basic: "member" },
+	return [
+		// ── Elgskinnet students — org memberships ───────────────────────
+		...allElkStudents.flatMap((uid) => [
+			{ groupId: G.sunnvik, userId: uid, basic: "member" as const, extra: studentOrgExtra },
+			{ groupId: G.elgskinnet, userId: uid, basic: "member" as const, extra: studentSchoolExtra },
+		]),
 
-	// ── University students (Gustav, Hanna, Isak, Julie) ────────────────
-	// University org
-	{ groupId: G.eku, userId: USER.gustav, basic: "member", extra: studentUniOrgExtra },
-	{ groupId: G.eku, userId: USER.hanna, basic: "member", extra: studentUniOrgExtra },
-	{ groupId: G.eku, userId: USER.isak, basic: "member", extra: studentUniOrgExtra },
-	{ groupId: G.eku, userId: USER.julie, basic: "member", extra: studentUniOrgExtra },
-	// Org units: Gustav & Hanna in IFI, Isak & Julie in MAT
-	{ groupId: G.ifi, userId: USER.gustav, basic: "member", extra: studentUniUnitExtra },
-	{ groupId: G.ifi, userId: USER.hanna, basic: "member", extra: studentUniUnitExtra },
-	{ groupId: G.mat, userId: USER.isak, basic: "member", extra: studentUniUnitExtra },
-	{ groupId: G.mat, userId: USER.julie, basic: "member", extra: studentUniUnitExtra },
-	// BINFO program
-	{ groupId: G.binfo, userId: USER.gustav, basic: "member", extra: studentProgramExtra },
-	{ groupId: G.binfo, userId: USER.hanna, basic: "member", extra: studentProgramExtra },
-	{ groupId: G.binfo, userId: USER.isak, basic: "member", extra: studentProgramExtra },
-	{ groupId: G.binfo, userId: USER.julie, basic: "member", extra: studentProgramExtra },
-	// 2024H cohort
-	{ groupId: G.binfo2024H, userId: USER.gustav, basic: "member" },
-	{ groupId: G.binfo2024H, userId: USER.hanna, basic: "member" },
-	{ groupId: G.binfo2024H, userId: USER.isak, basic: "member" },
-	{ groupId: G.binfo2024H, userId: USER.julie, basic: "member" },
-	// Klasse A: Gustav & Hanna
-	{ groupId: G.binfoKlasseA, userId: USER.gustav, basic: "member" },
-	{ groupId: G.binfoKlasseA, userId: USER.hanna, basic: "member" },
-	// Courses: Gustav & Isak in IN1000, Hanna & Julie in MAT1100
-	{ groupId: G.in1000, userId: USER.gustav, basic: "member", extra: studentCourseExtra },
-	{ groupId: G.in1000, userId: USER.isak, basic: "member", extra: studentCourseExtra },
-	{ groupId: G.mat1100, userId: USER.hanna, basic: "member", extra: studentCourseExtra },
-	{ groupId: G.mat1100, userId: USER.julie, basic: "member", extra: studentCourseExtra },
+		// ── Class 1A — basis group (6 students) ─────────────────────────
+		...class1A.map((uid) => ({
+			groupId: G.elk1A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+		})),
+		// All 1A students in all three teaching groups
+		...class1A.flatMap((uid) => [
+			{ groupId: G.elkMatte1A, userId: uid, basic: "member" as const, extra: studentTeachingExtra },
+			{ groupId: G.elkNorsk1A, userId: uid, basic: "member" as const, extra: studentTeachingExtra },
+			{ groupId: G.elkEng1A, userId: uid, basic: "member" as const, extra: studentTeachingExtra },
+		]),
 
-	// ── Teacher Kari → Elgskinnets ─────────────────────────────────────
-	{ groupId: G.sunnvik, userId: USER.kari, basic: "admin", extra: teacherElkOrgExtra },
-	{ groupId: G.elgskinnet, userId: USER.kari, basic: "member", extra: studentSchoolExtra },
-	// Admin of all Elgskinnet education groups
-	{ groupId: G.elk1A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elk2A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elk3A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elkMatte1A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elkNorsk2A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elkEng3A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.elkElevraad, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
+		// ── Class 2A — basis group (2 students) ─────────────────────────
+		...class2A.map((uid) => ({
+			groupId: G.elk2A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+		})),
+		...class2A.map((uid) => ({
+			groupId: G.elkMatte2A, userId: uid, basic: "member" as const, extra: studentTeachingExtra,
+		})),
 
-	// ── Teacher Lars → Fjelltoppen ─────────────────────────────────────
-	{ groupId: G.sunnvik, userId: USER.lars, basic: "admin", extra: teacherElkOrgExtra },
-	{ groupId: G.fjelltoppen, userId: USER.lars, basic: "member", extra: studentSchoolExtra },
-	// Admin of all Fjelltoppen education groups
-	{ groupId: G.fjl8A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.fjl9A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.fjlMatte8A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
-	{ groupId: G.fjlNorsk9A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
+		// ── Class 3A — basis group ──────────────────────────────────────
+		...class3A.map((uid) => ({
+			groupId: G.elk3A, userId: uid, basic: "member" as const, extra: studentBasisExtra,
+		})),
 
-	// ── Faculty Marte → University ─────────────────────────────────────
-	{ groupId: G.eku, userId: USER.marte, basic: "admin", extra: facultyUniOrgExtra },
-	{ groupId: G.ifi, userId: USER.marte, basic: "member", extra: studentUniUnitExtra },
-	// Owner of courses
-	{ groupId: G.in1000, userId: USER.marte, basic: "owner", extra: facultyCourseExtra },
-	{ groupId: G.mat1100, userId: USER.marte, basic: "owner", extra: facultyCourseExtra },
+		// Alf in Elevrådet
+		{ groupId: G.elkElevraad, userId: USER.alf, basic: "member" },
 
-	// ── Admin Nils → School owner ──────────────────────────────────────
-	{ groupId: G.sunnvik, userId: USER.nils, basic: "admin", extra: adminOrgExtra },
+		// ── Elgskinnet teachers — org memberships ───────────────────────
+		...elkTeachers.flatMap((uid) => [
+			{ groupId: G.sunnvik, userId: uid, basic: "admin" as const, extra: teacherOrgExtra },
+			{ groupId: G.elgskinnet, userId: uid, basic: "member" as const, extra: studentSchoolExtra },
+		]),
 
-	// ── Ad hoc groups ──────────────────────────────────────────────────
-	{ groupId: G.adHocAlpha, userId: USER.gustav, basic: "owner" },
-	{ groupId: G.adHocAlpha, userId: USER.hanna, basic: "member" },
-	{ groupId: G.adHocAlpha, userId: USER.isak, basic: "member" },
-];
+		// Kari teaches Matte 1A + 2A
+		{ groupId: G.elk1A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.elk2A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.elkMatte1A, userId: USER.kari, basic: "admin", extra: teacherTeachingExtra },
+		{ groupId: G.elkMatte2A, userId: USER.kari, basic: "admin", extra: teacherTeachingExtra },
+
+		// Lars teaches Norsk 1A
+		{ groupId: G.elk1A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.elkNorsk1A, userId: USER.lars, basic: "admin", extra: teacherTeachingExtra },
+
+		// Marte teaches Engelsk 1A
+		{ groupId: G.elk1A, userId: USER.marte, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.elkEng1A, userId: USER.marte, basic: "admin", extra: teacherTeachingExtra },
+		{ groupId: G.elkElevraad, userId: USER.marte, basic: "admin", extra: teacherTeachingExtra },
+
+		// ── Fjelltoppen students (reuse Gustav and Hanna for some cross-enrollment) ──
+		// Fjelltoppen teachers — Kari also teaches at Fjelltoppen
+		{ groupId: G.fjelltoppen, userId: USER.kari, basic: "member", extra: studentSchoolExtra },
+		{ groupId: G.fjell8A, userId: USER.kari, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.fjellMatte8A, userId: USER.kari, basic: "admin", extra: teacherTeachingExtra },
+		{ groupId: G.fjell9A, userId: USER.lars, basic: "admin", extra: teacherBasisExtra },
+		{ groupId: G.fjellNorsk9A, userId: USER.lars, basic: "admin", extra: teacherTeachingExtra },
+
+		// ── University students (Isak, Julie) ───────────────────────────
+		...[USER.isak, USER.julie].flatMap((uid) => [
+			{ groupId: G.eku, userId: uid, basic: "member" as const, extra: studentUniOrgExtra },
+			{ groupId: G.ifi, userId: uid, basic: "member" as const, extra: studentUniUnitExtra },
+			{ groupId: G.binfo, userId: uid, basic: "member" as const, extra: studentProgramExtra },
+			{ groupId: G.binfo2024H, userId: uid, basic: "member" as const },
+			{ groupId: G.binfo2024HA, userId: uid, basic: "member" as const },
+			{ groupId: G.in1000, userId: uid, basic: "member" as const, extra: studentCourseExtra },
+			{ groupId: G.mat1100, userId: uid, basic: "member" as const, extra: studentCourseExtra },
+			{ groupId: G.ks, userId: uid, basic: "member" as const },
+		]),
+
+		// ── Faculty Ole → University ────────────────────────────────────
+		{ groupId: G.eku, userId: USER.ole, basic: "admin", extra: facultyUniOrgExtra },
+		{ groupId: G.ifi, userId: USER.ole, basic: "member", extra: studentUniUnitExtra },
+		{ groupId: G.in1000, userId: USER.ole, basic: "owner", extra: facultyCourseExtra },
+		{ groupId: G.mat1100, userId: USER.ole, basic: "owner", extra: facultyCourseExtra },
+
+		// ── Admin Nils → School owner ───────────────────────────────────
+		{ groupId: G.sunnvik, userId: USER.nils, basic: "admin", extra: adminOrgExtra },
+
+		// ── Ad hoc groups ───────────────────────────────────────────────
+		{ groupId: G.adHocAlpha, userId: USER.isak, basic: "owner" },
+		{ groupId: G.adHocAlpha, userId: USER.julie, basic: "member" },
+		{ groupId: G.adHocBeta, userId: USER.ole, basic: "owner" },
+		{ groupId: G.adHocBeta, userId: USER.isak, basic: "member" },
+	];
 }
 
 // ── Run seed ────────────────────────────────────────────────────────────

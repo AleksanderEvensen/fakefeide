@@ -14,6 +14,7 @@ app.get("/:domain/groups", async (c) => {
 	const perPage = Math.min(Number.parseInt(c.req.query("per_page") || "100", 10), 1000);
 	const cursor = c.req.query("cursor");
 	const goType = c.req.query("go_type");
+	const showAll = c.req.query("showAll") === "true";
 
 	const orgId = `fc:org:${domain}`;
 
@@ -46,6 +47,11 @@ app.get("/:domain/groups", async (c) => {
 				return false;
 			}
 		});
+	}
+
+	if (!showAll) {
+		const now = new Date().toISOString();
+		allGroups = allGroups.filter((g) => !g.notAfter || g.notAfter >= now);
 	}
 
 	allGroups.sort((a, b) => a.id.localeCompare(b.id));
