@@ -7,5 +7,6 @@
 	"routes": [
 		{ "pattern": "fakefeide.no", "custom_domain": true },
 		{ "pattern": "auth.fakefeide.no", "custom_domain": true },
+		{ "pattern": "groups-api.fakefeide.no", "custom_domain": true },
 	],
 }

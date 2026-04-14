@@ -167,14 +167,8 @@ export const oauthConsent = sqliteTable("oauth_consent", {
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 });
 
-export const userRelations = relations(user, ({ many }) => ({
-	sessions: many(session),
-	accounts: many(account),
-	oauthClients: many(oauthClient),
-	oauthRefreshTokens: many(oauthRefreshToken),
-	oauthAccessTokens: many(oauthAccessToken),
-	oauthConsents: many(oauthConsent),
-}));
+// NOTE: userRelations is defined in schema.ts to include groupMemberships
+// without circular imports.
 
 export const sessionRelations = relations(session, ({ one, many }) => ({
 	user: one(user, {

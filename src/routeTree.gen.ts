@@ -15,6 +15,7 @@ import { Route as aboutRouteImport } from './routes/about'
 import { Route as indexRouteImport } from './routes/index'
 import { Route as wellKnownOpenidConfigurationRouteImport } from './routes/_well-known/openid-configuration'
 import { Route as wellKnownOauthAuthorizationServerRouteImport } from './routes/_well-known/oauth-authorization-server'
+import { Route as ApiGroupsSplatRouteImport } from './routes/api/groups/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const signInRoute = signInRouteImport.update({
@@ -49,6 +50,11 @@ const wellKnownOauthAuthorizationServerRoute =
     path: '/.well-known/oauth-authorization-server',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiGroupsSplatRoute = ApiGroupsSplatRouteImport.update({
+  id: '/api/groups/$',
+  path: '/api/groups/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
   '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/groups/$': typeof ApiGroupsSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof indexRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
   '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/groups/$': typeof ApiGroupsSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
   '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/groups/$': typeof ApiGroupsSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-authorization-server'
     | '/.well-known/openid-configuration'
     | '/api/auth/$'
+    | '/api/groups/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-authorization-server'
     | '/.well-known/openid-configuration'
     | '/api/auth/$'
+    | '/api/groups/$'
   id:
     | '__root__'
     | '/'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-authorization-server'
     | '/.well-known/openid-configuration'
     | '/api/auth/$'
+    | '/api/groups/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -121,6 +133,7 @@ export interface RootRouteChildren {
   wellKnownOauthAuthorizationServerRoute: typeof wellKnownOauthAuthorizationServerRoute
   wellKnownOpenidConfigurationRoute: typeof wellKnownOpenidConfigurationRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiGroupsSplatRoute: typeof ApiGroupsSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof wellKnownOauthAuthorizationServerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/groups/$': {
+      id: '/api/groups/$'
+      path: '/api/groups/$'
+      fullPath: '/api/groups/$'
+      preLoaderRoute: typeof ApiGroupsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -186,6 +206,7 @@ const rootRouteChildren: RootRouteChildren = {
     wellKnownOauthAuthorizationServerRoute,
   wellKnownOpenidConfigurationRoute: wellKnownOpenidConfigurationRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiGroupsSplatRoute: ApiGroupsSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

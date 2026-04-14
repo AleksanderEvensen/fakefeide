@@ -20,7 +20,8 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
 		"db:pull": "drizzle-kit pull",
-		"db:studio": "drizzle-kit studio"
+		"db:studio": "drizzle-kit studio",
+		"db:seed-groups": "bun run src/db/seed-groups.ts"
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.4.0",
@@ -43,6 +44,7 @@
 		"clsx": "^2.1.1",
 		"drizzle-kit": "^0.31.9",
 		"drizzle-orm": "^0.45.1",
+		"hono": "^4.12.12",
 		"lucide-react": "^1.8.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
