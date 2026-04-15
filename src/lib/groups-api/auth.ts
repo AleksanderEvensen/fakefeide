@@ -12,12 +12,22 @@ export type AuthEnv = {
 	};
 };
 
+async function hashToken(token: string): Promise<string> {
+	const data = new TextEncoder().encode(token);
+	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+	const bytes = new Uint8Array(hashBuffer);
+	let binary = "";
+	for (const byte of bytes) binary += String.fromCharCode(byte);
+	return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
 export const requireToken = createMiddleware<AuthEnv>(async (c, next) => {
 	const authHeader = c.req.header("Authorization");
 	const bearer = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 	if (!bearer) return c.json({ error: "unauthorized" }, 401);
 
-	const tokenRecord = await db.select().from(oauthAccessToken).where(eq(oauthAccessToken.token, bearer)).get();
+	const hashedBearer = await hashToken(bearer);
+	const tokenRecord = await db.select().from(oauthAccessToken).where(eq(oauthAccessToken.token, hashedBearer)).get();
 
 	if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
 		return c.json({ error: "unauthorized" }, 401);
