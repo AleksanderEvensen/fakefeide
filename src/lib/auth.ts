@@ -11,6 +11,7 @@ const env = getEnv();
 export const auth = betterAuth({
 	baseURL: env.BETTER_AUTH_URL,
 	secret: env.BETTER_AUTH_SECRET,
+	trustedOrigins: ["https://fakefeide.no", "https://www.fakefeide.no", "https://auth.fakefeide.no", "https://groups-api.fakefeide.no"],
 	database: drizzleAdapter(db, {
 		provider: "sqlite",
 	}),
