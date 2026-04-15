@@ -13,10 +13,10 @@ import { Route as signInRouteImport } from './routes/sign-in'
 import { Route as consentRouteImport } from './routes/consent'
 import { Route as aboutRouteImport } from './routes/about'
 import { Route as indexRouteImport } from './routes/index'
-import { Route as wellKnownOpenidConfigurationRouteImport } from './routes/_well-known/openid-configuration'
-import { Route as wellKnownOauthAuthorizationServerRouteImport } from './routes/_well-known/oauth-authorization-server'
 import { Route as ApiGroupsSplatRouteImport } from './routes/api/groups/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as wellKnownOpenidConfigurationRouteImport } from './routes/_well-known/openid-configuration'
+import { Route as wellKnownOauthAuthorizationServerRouteImport } from './routes/_well-known/oauth-authorization-server'
 
 const signInRoute = signInRouteImport.update({
   id: '/sign-in',
@@ -38,18 +38,6 @@ const indexRoute = indexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const wellKnownOpenidConfigurationRoute =
-  wellKnownOpenidConfigurationRouteImport.update({
-    id: '/.well-known/openid-configuration',
-    path: '/.well-known/openid-configuration',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const wellKnownOauthAuthorizationServerRoute =
-  wellKnownOauthAuthorizationServerRouteImport.update({
-    id: '/.well-known/oauth-authorization-server',
-    path: '/.well-known/oauth-authorization-server',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiGroupsSplatRoute = ApiGroupsSplatRouteImport.update({
   id: '/api/groups/$',
   path: '/api/groups/$',
@@ -60,26 +48,38 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const wellKnownOpenidConfigurationRoute =
+  wellKnownOpenidConfigurationRouteImport.update({
+    id: '/api/auth/.well-known/openid-configuration',
+    path: '/api/auth/.well-known/openid-configuration',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const wellKnownOauthAuthorizationServerRoute =
+  wellKnownOauthAuthorizationServerRouteImport.update({
+    id: '/api/auth/.well-known/oauth-authorization-server',
+    path: '/api/auth/.well-known/oauth-authorization-server',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof indexRoute
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
   '/sign-in': typeof signInRoute
-  '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
-  '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
+  '/api/auth/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
+  '/api/auth/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof indexRoute
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
   '/sign-in': typeof signInRoute
-  '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
-  '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
+  '/api/auth/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
+  '/api/auth/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,10 +87,10 @@ export interface FileRoutesById {
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
   '/sign-in': typeof signInRoute
-  '/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
-  '/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
+  '/api/auth/.well-known/oauth-authorization-server': typeof wellKnownOauthAuthorizationServerRoute
+  '/api/auth/.well-known/openid-configuration': typeof wellKnownOpenidConfigurationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,30 +99,30 @@ export interface FileRouteTypes {
     | '/about'
     | '/consent'
     | '/sign-in'
-    | '/.well-known/oauth-authorization-server'
-    | '/.well-known/openid-configuration'
     | '/api/auth/$'
     | '/api/groups/$'
+    | '/api/auth/.well-known/oauth-authorization-server'
+    | '/api/auth/.well-known/openid-configuration'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/consent'
     | '/sign-in'
-    | '/.well-known/oauth-authorization-server'
-    | '/.well-known/openid-configuration'
     | '/api/auth/$'
     | '/api/groups/$'
+    | '/api/auth/.well-known/oauth-authorization-server'
+    | '/api/auth/.well-known/openid-configuration'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/consent'
     | '/sign-in'
-    | '/.well-known/oauth-authorization-server'
-    | '/.well-known/openid-configuration'
     | '/api/auth/$'
     | '/api/groups/$'
+    | '/api/auth/.well-known/oauth-authorization-server'
+    | '/api/auth/.well-known/openid-configuration'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -130,10 +130,10 @@ export interface RootRouteChildren {
   aboutRoute: typeof aboutRoute
   consentRoute: typeof consentRoute
   signInRoute: typeof signInRoute
-  wellKnownOauthAuthorizationServerRoute: typeof wellKnownOauthAuthorizationServerRoute
-  wellKnownOpenidConfigurationRoute: typeof wellKnownOpenidConfigurationRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGroupsSplatRoute: typeof ApiGroupsSplatRoute
+  wellKnownOauthAuthorizationServerRoute: typeof wellKnownOauthAuthorizationServerRoute
+  wellKnownOpenidConfigurationRoute: typeof wellKnownOpenidConfigurationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -166,20 +166,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof indexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/openid-configuration': {
-      id: '/.well-known/openid-configuration'
-      path: '/.well-known/openid-configuration'
-      fullPath: '/.well-known/openid-configuration'
-      preLoaderRoute: typeof wellKnownOpenidConfigurationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.well-known/oauth-authorization-server': {
-      id: '/.well-known/oauth-authorization-server'
-      path: '/.well-known/oauth-authorization-server'
-      fullPath: '/.well-known/oauth-authorization-server'
-      preLoaderRoute: typeof wellKnownOauthAuthorizationServerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/groups/$': {
       id: '/api/groups/$'
       path: '/api/groups/$'
@@ -194,6 +180,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/.well-known/openid-configuration': {
+      id: '/api/auth/.well-known/openid-configuration'
+      path: '/api/auth/.well-known/openid-configuration'
+      fullPath: '/api/auth/.well-known/openid-configuration'
+      preLoaderRoute: typeof wellKnownOpenidConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/.well-known/oauth-authorization-server': {
+      id: '/api/auth/.well-known/oauth-authorization-server'
+      path: '/api/auth/.well-known/oauth-authorization-server'
+      fullPath: '/api/auth/.well-known/oauth-authorization-server'
+      preLoaderRoute: typeof wellKnownOauthAuthorizationServerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -202,11 +202,11 @@ const rootRouteChildren: RootRouteChildren = {
   aboutRoute: aboutRoute,
   consentRoute: consentRoute,
   signInRoute: signInRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiGroupsSplatRoute: ApiGroupsSplatRoute,
   wellKnownOauthAuthorizationServerRoute:
     wellKnownOauthAuthorizationServerRoute,
   wellKnownOpenidConfigurationRoute: wellKnownOpenidConfigurationRoute,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiGroupsSplatRoute: ApiGroupsSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

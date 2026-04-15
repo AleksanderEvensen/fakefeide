@@ -6,8 +6,14 @@ export const routes = rootRoute("__root.tsx", [
 	route("/sign-in", "sign-in.tsx"),
 	route("/consent", "consent.tsx"),
 	physical("/api", "api"),
-	route("/[.]well-known", [
-		route("/openid-configuration", "_well-known/openid-configuration.ts"),
-		route("/oauth-authorization-server", "_well-known/oauth-authorization-server.ts"),
+	route("/api/auth/[.]well-known", [
+		route(
+			"/openid-configuration",
+			"_well-known/openid-configuration.ts",
+		),
+		route(
+			"/oauth-authorization-server",
+			"_well-known/oauth-authorization-server.ts",
+		),
 	]),
 ]);

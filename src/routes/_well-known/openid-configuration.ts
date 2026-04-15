@@ -4,7 +4,9 @@ import { auth } from "#/lib/auth";
 
 const handler = oauthProviderOpenIdConfigMetadata(auth);
 
-export const Route = createFileRoute("/.well-known/openid-configuration")({
+export const Route = createFileRoute(
+	"/api/auth/.well-known/openid-configuration",
+)({
 	server: {
 		handlers: {
 			GET: async ({ request }) => {

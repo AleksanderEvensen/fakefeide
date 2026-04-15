@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { authClient } from "#/lib/auth-client";
 
 export const Route = createFileRoute("/")({ ssr: false, component: App });
 
@@ -101,6 +102,44 @@ function SectionHeading({ id, children }: { id: string; children: React.ReactNod
 	);
 }
 
+function SessionCard() {
+	const { data: session, isPending } = authClient.useSession();
+
+	if (isPending) return null;
+
+	if (!session) {
+		return (
+			<div className="mb-10 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+				<p className="text-sm text-gray-600">Not signed in</p>
+				<a
+					href="/sign-in"
+					className="ml-4 shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-100"
+				>
+					Sign in
+				</a>
+			</div>
+		);
+	}
+
+	return (
+		<div className="mb-10 flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
+			<div className="min-w-0">
+				<p className="text-sm font-medium text-emerald-900">
+					Signed in as <span className="font-semibold">{session.user.name}</span>
+				</p>
+				<p className="truncate text-xs text-emerald-700">{session.user.email}</p>
+			</div>
+			<button
+				type="button"
+				onClick={() => authClient.signOut()}
+				className="ml-4 shrink-0 rounded-md border border-emerald-300 bg-white px-3 py-1.5 text-xs font-medium text-emerald-800 hover:bg-emerald-100"
+			>
+				Sign out
+			</button>
+		</div>
+	);
+}
+
 function App() {
 	return (
 		<main className="mx-auto max-w-3xl px-4 pb-16 pt-12">
@@ -111,6 +150,8 @@ function App() {
 					A fake Feide identity provider for testing and development. OAuth 2.0 / OpenID Connect compliant.
 				</p>
 			</div>
+
+			<SessionCard />
 
 			{/* Overview */}
 			<section className="mb-10 space-y-3">
@@ -150,10 +191,10 @@ function App() {
 				</p>
 				<CodeBlock>
 					{`# Discovery endpoint
-GET https://fakefeide.no/.well-known/openid-configuration
+GET https://fakefeide.no/api/auth/.well-known/openid-configuration
 
 # Or for local development
-GET http://localhost:3000/.well-known/openid-configuration`}
+GET http://localhost:3000/api/auth/.well-known/openid-configuration`}
 				</CodeBlock>
 				<p className="text-sm text-gray-600">Register a client dynamically:</p>
 				<CodeBlock>
@@ -222,7 +263,7 @@ Content-Type: application/json
 				<div className="space-y-2">
 					<EndpointCard
 						method="GET"
-						path="/.well-known/openid-configuration"
+						path="/api/auth/.well-known/openid-configuration"
 						description="OpenID Connect discovery document. Returns metadata about the identity provider including all endpoint URLs, supported scopes, grant types, and signing algorithms."
 						response={`{
   "issuer": "https://fakefeide.no/api/auth",
@@ -236,7 +277,7 @@ Content-Type: application/json
 					/>
 					<EndpointCard
 						method="GET"
-						path="/.well-known/oauth-authorization-server"
+						path="/api/auth/.well-known/oauth-authorization-server"
 						description="OAuth 2.0 Authorization Server Metadata. Similar to the OIDC discovery document but follows RFC 8414."
 					/>
 					<EndpointCard

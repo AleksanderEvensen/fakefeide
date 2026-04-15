@@ -188,7 +188,7 @@ function resolveAuthApiBase(config: OIDCConfig): string {
 async function testDiscovery(): Promise<OIDCConfig | null> {
 	section(1, "OIDC Discovery");
 
-	const discoveryUrl = `${BASE_URL}/.well-known/openid-configuration`;
+	const discoveryUrl = `${BASE_URL}/api/auth/.well-known/openid-configuration`;
 	const res = await fetch(discoveryUrl);
 
 	assert(res.ok, `GET ${discoveryUrl} → ${res.status}`);

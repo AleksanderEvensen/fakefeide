@@ -4,7 +4,9 @@ import { auth } from "#/lib/auth";
 
 const handler = oauthProviderAuthServerMetadata(auth);
 
-export const Route = createFileRoute("/.well-known/oauth-authorization-server")({
+export const Route = createFileRoute(
+	"/api/auth/.well-known/oauth-authorization-server",
+)({
 	server: {
 		handlers: {
 			GET: async ({ request }) => {
