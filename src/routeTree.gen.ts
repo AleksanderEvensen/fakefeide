@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as signInRouteImport } from './routes/sign-in'
+import { Route as credentialsRouteImport } from './routes/credentials'
 import { Route as consentRouteImport } from './routes/consent'
 import { Route as aboutRouteImport } from './routes/about'
 import { Route as indexRouteImport } from './routes/index'
@@ -21,6 +22,11 @@ import { Route as wellKnownOauthAuthorizationServerRouteImport } from './routes/
 const signInRoute = signInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const credentialsRoute = credentialsRouteImport.update({
+  id: '/credentials',
+  path: '/credentials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const consentRoute = consentRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/': typeof indexRoute
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
+  '/credentials': typeof credentialsRoute
   '/sign-in': typeof signInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/': typeof indexRoute
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
+  '/credentials': typeof credentialsRoute
   '/sign-in': typeof signInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/': typeof indexRoute
   '/about': typeof aboutRoute
   '/consent': typeof consentRoute
+  '/credentials': typeof credentialsRoute
   '/sign-in': typeof signInRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/groups/$': typeof ApiGroupsSplatRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/consent'
+    | '/credentials'
     | '/sign-in'
     | '/api/auth/$'
     | '/api/groups/$'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/consent'
+    | '/credentials'
     | '/sign-in'
     | '/api/auth/$'
     | '/api/groups/$'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/consent'
+    | '/credentials'
     | '/sign-in'
     | '/api/auth/$'
     | '/api/groups/$'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   indexRoute: typeof indexRoute
   aboutRoute: typeof aboutRoute
   consentRoute: typeof consentRoute
+  credentialsRoute: typeof credentialsRoute
   signInRoute: typeof signInRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiGroupsSplatRoute: typeof ApiGroupsSplatRoute
@@ -143,6 +156,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof signInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credentials': {
+      id: '/credentials'
+      path: '/credentials'
+      fullPath: '/credentials'
+      preLoaderRoute: typeof credentialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consent': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   indexRoute: indexRoute,
   aboutRoute: aboutRoute,
   consentRoute: consentRoute,
+  credentialsRoute: credentialsRoute,
   signInRoute: signInRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiGroupsSplatRoute: ApiGroupsSplatRoute,

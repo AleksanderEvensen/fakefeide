@@ -5,6 +5,7 @@ export const routes = rootRoute("__root.tsx", [
 	route("/about", "about.tsx"),
 	route("/sign-in", "sign-in.tsx"),
 	route("/consent", "consent.tsx"),
+	route("/credentials", "credentials.tsx"),
 	physical("/api", "api"),
 	route("/api/auth/[.]well-known", [
 		route(

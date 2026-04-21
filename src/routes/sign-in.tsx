@@ -11,6 +11,17 @@ export const Route = createFileRoute("/sign-in")({
 	component: SignIn,
 });
 
+function continueOAuthFlowIfPending(): boolean {
+	if (typeof window === "undefined") return false;
+	const search = window.location.search;
+	// Better Auth's oauth-provider forwards signed params (sig, exp) when it
+	// redirects to the loginPage. Forward them back to /oauth2/authorize so it
+	// can resume the flow and redirect directly to the client app.
+	if (!search || !search.includes("sig=")) return false;
+	window.location.href = `/api/auth/oauth2/authorize${search}`;
+	return true;
+}
+
 const ROLE_LABELS: Record<UserRole, string> = {
 	student: "Student",
 	teacher: "Teacher",
@@ -59,7 +70,7 @@ function SignIn() {
 
 			if (error) {
 				setError(error.message ?? "Sign in failed");
-			} else {
+			} else if (!continueOAuthFlowIfPending()) {
 				navigate({ to: "/" });
 			}
 		} catch {
@@ -83,7 +94,7 @@ function SignIn() {
 
 			if (error) {
 				setError(error.message ?? "Sign up failed");
-			} else {
+			} else if (!continueOAuthFlowIfPending()) {
 				navigate({ to: "/" });
 			}
 		} catch {
@@ -103,7 +114,7 @@ function SignIn() {
 			});
 			if (error) {
 				setError(error.message ?? "Quick login failed");
-			} else {
+			} else if (!continueOAuthFlowIfPending()) {
 				navigate({ to: "/" });
 			}
 		} catch {
