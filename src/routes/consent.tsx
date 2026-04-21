@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { authClient } from "#/lib/auth-client";
 import { Button } from "#/components/ui/button";
 
@@ -54,11 +55,19 @@ function Consent() {
 		setSubmitting(true);
 		setError(null);
 
+		const task = authClient.oauth2.consent({
+			accept,
+			...(accept && scope ? { scope } : {}),
+		});
+
+		toast.promise(task, {
+			loading: accept ? "Authorizing..." : "Cancelling...",
+			success: accept ? "Authorized — redirecting to application..." : "Cancelled — redirecting...",
+			error: "Failed to process consent. Please try again.",
+		});
+
 		try {
-			await authClient.oauth2.consent({
-				accept,
-				...(accept && scope ? { scope } : {}),
-			});
+			await task;
 		} catch {
 			setError("Failed to process consent. Please try again.");
 			setSubmitting(false);

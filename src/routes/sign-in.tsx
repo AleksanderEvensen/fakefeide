@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { authClient } from "#/lib/auth-client";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
@@ -57,71 +58,58 @@ function SignIn() {
 		});
 	}, [roleFilter, institutionFilter]);
 
-	async function handleSignIn(e: React.FormEvent) {
-		e.preventDefault();
+	async function runWithToast(
+		action: () => Promise<{ error: { message?: string } | null }>,
+		labels: { loading: string; fail: string },
+	) {
 		setError(null);
 		setLoading(true);
 
-		try {
-			const { error } = await authClient.signIn.email({
-				email,
-				password,
-			});
+		const task = (async () => {
+			const { error } = await action();
+			if (error) throw new Error(error.message ?? labels.fail);
+		})();
 
-			if (error) {
-				setError(error.message ?? "Sign in failed");
-			} else if (!continueOAuthFlowIfPending()) {
+		toast.promise(task, {
+			loading: labels.loading,
+			success: () => {
+				if (continueOAuthFlowIfPending()) return "Signed in — redirecting to application...";
 				navigate({ to: "/" });
-			}
-		} catch {
-			setError("An unexpected error occurred");
+				return "Signed in!";
+			},
+			error: (err: unknown) => (err instanceof Error ? err.message : labels.fail),
+		});
+
+		try {
+			await task;
+		} catch (err) {
+			setError(err instanceof Error ? err.message : labels.fail);
 		} finally {
 			setLoading(false);
 		}
+	}
+
+	async function handleSignIn(e: React.FormEvent) {
+		e.preventDefault();
+		await runWithToast(() => authClient.signIn.email({ email, password }), {
+			loading: "Signing in...",
+			fail: "Sign in failed",
+		});
 	}
 
 	async function handleSignUp(e: React.FormEvent) {
 		e.preventDefault();
-		setError(null);
-		setLoading(true);
-
-		try {
-			const { error } = await authClient.signUp.email({
-				email,
-				password,
-				name,
-			});
-
-			if (error) {
-				setError(error.message ?? "Sign up failed");
-			} else if (!continueOAuthFlowIfPending()) {
-				navigate({ to: "/" });
-			}
-		} catch {
-			setError("An unexpected error occurred");
-		} finally {
-			setLoading(false);
-		}
+		await runWithToast(() => authClient.signUp.email({ email, password, name }), {
+			loading: "Creating your account...",
+			fail: "Sign up failed",
+		});
 	}
 
 	async function quickLogin(user: SeedUser) {
-		setError(null);
-		setLoading(true);
-		try {
-			const { error } = await authClient.signIn.email({
-				email: user.email,
-				password: SEED_PASSWORD,
-			});
-			if (error) {
-				setError(error.message ?? "Quick login failed");
-			} else if (!continueOAuthFlowIfPending()) {
-				navigate({ to: "/" });
-			}
-		} catch {
-			setError("An unexpected error occurred");
-		} finally {
-			setLoading(false);
-		}
+		await runWithToast(() => authClient.signIn.email({ email: user.email, password: SEED_PASSWORD }), {
+			loading: `Signing in as ${user.name}...`,
+			fail: "Quick login failed",
+		});
 	}
 
 	return (
