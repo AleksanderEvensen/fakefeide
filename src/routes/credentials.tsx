@@ -9,11 +9,17 @@ import {
 	adminLogout,
 	createClient,
 	deleteClient,
+	deleteClientConsent,
 	getAdminSession,
+	listClientConsents,
 	listClients,
 	updateClient,
+	updateClientConsent,
 	type AdminClient,
+	type ClientConsent,
 } from "#/lib/credentials.functions";
+
+const AVAILABLE_SCOPES = ["openid", "profile", "email", "offline_access"] as const;
 
 export const Route = createFileRoute("/credentials")({
 	ssr: false,
@@ -417,6 +423,166 @@ function ClientCard({ client, onChanged }: { client: AdminClient; onChanged: () 
 					{saving ? "Saving…" : "Save changes"}
 				</Button>
 			</div>
+
+			<ConsentsSection clientId={client.clientId} />
+		</div>
+	);
+}
+
+function ConsentsSection({ clientId }: { clientId: string }) {
+	const list = useServerFn(listClientConsents);
+	const [open, setOpen] = useState(false);
+	const [consents, setConsents] = useState<ClientConsent[] | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	const refresh = useCallback(async () => {
+		try {
+			const rows = await list({ data: { clientId } });
+			setConsents(rows);
+			setError(null);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to load consents");
+		}
+	}, [list, clientId]);
+
+	useEffect(() => {
+		if (open && consents === null) refresh();
+	}, [open, consents, refresh]);
+
+	return (
+		<div className="mt-6 border-t border-gray-200 pt-4">
+			<button
+				type="button"
+				onClick={() => setOpen((v) => !v)}
+				className="flex w-full items-center justify-between text-sm font-semibold text-gray-700 hover:text-gray-900"
+			>
+				<span>
+					Authorized users{consents !== null && ` (${consents.length})`}
+				</span>
+				<span className="text-gray-400">{open ? "▾" : "▸"}</span>
+			</button>
+
+			{open && (
+				<div className="mt-3 space-y-2">
+					{error && <p className="text-sm text-red-600">{error}</p>}
+					{consents === null && <p className="text-sm text-gray-500">Loading…</p>}
+					{consents?.length === 0 && (
+						<p className="text-sm text-gray-500">No users have authorized this client yet.</p>
+					)}
+					{consents?.map((consent) => (
+						<ConsentRow key={consent.id} consent={consent} onChanged={refresh} />
+					))}
+				</div>
+			)}
+		</div>
+	);
+}
+
+function ConsentRow({ consent, onChanged }: { consent: ClientConsent; onChanged: () => void }) {
+	const update = useServerFn(updateClientConsent);
+	const remove = useServerFn(deleteClientConsent);
+
+	const [scopes, setScopes] = useState<string[]>(consent.scopes);
+	const [saving, setSaving] = useState(false);
+	const [deleting, setDeleting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const dirty =
+		scopes.length !== consent.scopes.length ||
+		scopes.some((s) => !consent.scopes.includes(s)) ||
+		consent.scopes.some((s) => !scopes.includes(s));
+
+	function toggleScope(scope: string) {
+		setScopes((prev) => (prev.includes(scope) ? prev.filter((s) => s !== scope) : [...prev, scope]));
+	}
+
+	async function handleSave() {
+		setSaving(true);
+		setError(null);
+		try {
+			await update({ data: { id: consent.id, scopes } });
+			onChanged();
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Save failed");
+		} finally {
+			setSaving(false);
+		}
+	}
+
+	async function handleDelete() {
+		const label = consent.userEmail ?? consent.userName ?? consent.userId ?? "this user";
+		if (!confirm(`Revoke authorization for ${label}?`)) return;
+		setDeleting(true);
+		setError(null);
+		try {
+			await remove({ data: { id: consent.id } });
+			onChanged();
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Delete failed");
+			setDeleting(false);
+		}
+	}
+
+	const extraScopes = scopes.filter((s) => !AVAILABLE_SCOPES.includes(s as (typeof AVAILABLE_SCOPES)[number]));
+
+	return (
+		<div className="rounded-md border border-gray-200 bg-gray-50 p-3">
+			<div className="flex items-start justify-between gap-3">
+				<div className="min-w-0 flex-1">
+					<p className="text-sm font-medium text-gray-900">
+						{consent.userName ?? consent.userEmail ?? consent.userId ?? "(unknown user)"}
+					</p>
+					{consent.userEmail && consent.userName && (
+						<p className="text-xs text-gray-600">{consent.userEmail}</p>
+					)}
+					<p className="mt-1 text-xs text-gray-500">
+						Authorized {consent.createdAt.toLocaleDateString()}
+						{consent.updatedAt.getTime() !== consent.createdAt.getTime() &&
+							` · updated ${consent.updatedAt.toLocaleDateString()}`}
+					</p>
+				</div>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={handleDelete}
+					disabled={deleting}
+				>
+					{deleting ? "Revoking…" : "Revoke"}
+				</Button>
+			</div>
+
+			<div className="mt-3 flex flex-wrap gap-3">
+				{AVAILABLE_SCOPES.map((scope) => (
+					<label key={scope} className="flex items-center gap-1.5 text-xs">
+						<input
+							type="checkbox"
+							checked={scopes.includes(scope)}
+							onChange={() => toggleScope(scope)}
+						/>
+						<span className="font-mono">{scope}</span>
+					</label>
+				))}
+				{extraScopes.map((scope) => (
+					<label key={scope} className="flex items-center gap-1.5 text-xs">
+						<input
+							type="checkbox"
+							checked={scopes.includes(scope)}
+							onChange={() => toggleScope(scope)}
+						/>
+						<span className="font-mono">{scope}</span>
+					</label>
+				))}
+			</div>
+
+			{error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+
+			{dirty && (
+				<div className="mt-2">
+					<Button size="sm" onClick={handleSave} disabled={saving}>
+						{saving ? "Saving…" : "Save scopes"}
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }
