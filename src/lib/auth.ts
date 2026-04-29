@@ -21,7 +21,7 @@ export const auth = betterAuth({
 		client: getRedis(),
 	}),
 	session: {
-		storeSessionInDatabase: false,
+		storeSessionInDatabase: true,
 		disableSessionRefresh: true,
 		cookieCache: {
 			enabled: true,
