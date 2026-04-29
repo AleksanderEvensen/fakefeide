@@ -4,6 +4,7 @@ type EnvVars = {
 	TURSO_DATABASE_URL: string;
 	TURSO_DATABASE_AUTH_TOKEN: string;
 	ADMIN_PASSWORD: string;
+	REDIS_CONNECTION_URL: string | undefined;
 };
 
 let cached: EnvVars | undefined;
@@ -15,6 +16,7 @@ function loadFromProcess(): EnvVars {
 		TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL!,
 		TURSO_DATABASE_AUTH_TOKEN: process.env.TURSO_DATABASE_AUTH_TOKEN!,
 		ADMIN_PASSWORD: process.env.ADMIN_PASSWORD!,
+		REDIS_CONNECTION_URL: process.env.REDIS_CONNECTION_URL,
 	};
 }
 

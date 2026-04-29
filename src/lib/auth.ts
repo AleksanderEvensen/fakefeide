@@ -3,8 +3,10 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { jwt } from "better-auth/plugins";
 import { oauthProvider } from "@better-auth/oauth-provider";
+import { redisStorage } from "@better-auth/redis-storage";
 import { getEnv } from "#/env";
 import { db } from "#/db";
+import { getRedis } from "#/lib/redis";
 
 const env = getEnv();
 
@@ -15,6 +17,17 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "sqlite",
 	}),
+	secondaryStorage: redisStorage({
+		client: getRedis(),
+	}),
+	session: {
+		storeSessionInDatabase: false,
+		disableSessionRefresh: true,
+		cookieCache: {
+			enabled: true,
+			maxAge: 10 * 60,
+		},
+	},
 	emailAndPassword: {
 		enabled: true,
 	},

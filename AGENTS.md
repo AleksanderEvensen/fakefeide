@@ -8,7 +8,7 @@ skills:
   load: "node_modules/@tanstack/router-core/skills/router-core/SKILL.md"
 - task: "Server functions, API routes, middleware, or SSR"
   load: "node_modules/@tanstack/start-client-core/skills/start-core/SKILL.md"
-- task: "Deploying to Cloudflare Workers"
+- task: "Deploying to Vercel"
   load: "node_modules/@tanstack/start-client-core/skills/start-core/deployment/SKILL.md"
 - task: "Setting up or configuring TanStack Devtools"
 load: "node_modules/@tanstack/devtools-vite/skills/devtools-vite-plugin/SKILL.md"
@@ -25,8 +25,9 @@ A fake Feide identity provider — an OAuth 2.0 / OpenID Connect server built fo
 | Framework   | TanStack Start (React 19, Vite 8, file-based routing with SSR) |
 | Auth        | Better Auth with `@better-auth/oauth-provider` plugin          |
 | Database    | Turso (libSQL) via Drizzle ORM                                 |
+| Cache       | Redis via `ioredis` (Upstash in prod, `ioredis-mock` in dev)   |
 | Styling     | Tailwind CSS 4 + shadcn/ui components                          |
-| Deployment  | Cloudflare Workers (`@cloudflare/vite-plugin`)                 |
+| Deployment  | Vercel (Nitro `vercel` preset)                                 |
 | Package mgr | Bun                                                            |
 | Linting     | oxlint (with typescript, unicorn, oxc plugins)                 |
 | Formatting  | oxfmt                                                          |
@@ -50,6 +51,7 @@ src/
 ├── lib/
 │   ├── auth.ts              # Better Auth server config (OAuth provider, JWT, email/password)
 │   ├── auth-client.ts       # Better Auth React client
+│   ├── redis.ts             # ioredis client (Upstash) with ioredis-mock fallback for dev
 │   ├── well-known.ts        # Metadata URL rewriter for subdomain routing
 │   └── utils.ts             # Shared utilities (cn helper)
 ├── routes/
@@ -101,7 +103,14 @@ All Better Auth API requests are handled by a catch-all route at `/api/auth/$` w
 
 ### Database
 
-Uses Turso (hosted libSQL) via the `@libsql/client/web` driver, wrapped with Drizzle ORM. The database client imports `env` from `cloudflare:workers` for runtime environment access.
+Uses Turso (hosted libSQL) via the `@libsql/client/web` driver, wrapped with Drizzle ORM. The database client reads connection config via `getEnv()` from `#/env`.
+
+### Secondary Storage (Redis)
+
+Better Auth is configured with `secondaryStorage` backed by Redis (via `@better-auth/redis-storage` + `ioredis`) to cache sessions and rate-limit state. The client lives in `src/lib/redis.ts`:
+
+- Production: connects to Upstash via `REDIS_CONNECTION_URL`.
+- Local dev: falls back to `ioredis-mock` (in-memory) when `REDIS_CONNECTION_URL` is unset.
 
 ### Path Aliases
 
@@ -115,7 +124,6 @@ Two aliases are configured and interchangeable:
 ```bash
 bun run dev            # Start dev server on port 3000
 bun run build          # Vite build + tsc type check
-bun run deploy         # Build and deploy to Cloudflare Workers
 bun run lint           # Run oxlint
 bun run lint:fix       # Run oxlint with auto-fix
 bun run fmt            # Format with oxfmt
@@ -129,12 +137,10 @@ bun run db:studio      # Open Drizzle Studio
 
 ## Deployment & Domains
 
-Deployed to Cloudflare Workers. Two custom domains are configured in `wrangler.jsonc`:
+Deployed to Vercel via the Nitro `vercel` preset (configured in `vite.config.ts`). Two custom domains are used:
 
 - `fakefeide.no` — main application (UI, sign-in, consent)
 - `auth.fakefeide.no` — OAuth/OIDC endpoints (mapped to `/api/auth` via URL rewrite)
-
-Cloudflare is the nameserver for `fakefeide.no`.
 
 ## Environment Variables
 
@@ -144,8 +150,13 @@ See `.env.example`. Required:
 - `BETTER_AUTH_SECRET` — Secret key (generate with `bunx --bun @better-auth/cli secret`)
 - `TURSO_DATABASE_URL` — Turso database URL
 - `TURSO_DATABASE_AUTH_TOKEN` — Turso auth token
+- `ADMIN_PASSWORD` — Password for the `/credentials` management page
 
-For production, secrets are pushed to Cloudflare Workers via the justfile (`just cf-env`).
+Optional:
+
+- `REDIS_CONNECTION_URL` — Full ioredis-compatible URL for the Upstash Redis instance. Leave unset in dev to use `ioredis-mock`.
+
+For production, secrets are pushed to Vercel via the justfile (`just vercel-env`).
 
 ## Conventions
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "#/lib/auth-client";
 
@@ -111,12 +111,12 @@ function SessionCard() {
 		return (
 			<div className="mb-10 flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
 				<p className="text-sm text-gray-600">Not signed in</p>
-				<a
-					href="/sign-in"
+				<Link
+					to="/sign-in"
 					className="ml-4 shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-100"
 				>
 					Sign in
-				</a>
+				</Link>
 			</div>
 		);
 	}
@@ -590,9 +590,9 @@ Content-Type: application/json
 						</li>
 						<li>
 							User logs in at the{" "}
-							<a href="/sign-in" className="text-[#1f4698] underline">
+							<Link to="/sign-in" className="text-[#1f4698] underline">
 								sign-in page
-							</a>{" "}
+							</Link>{" "}
 							(or use a pre-seeded test account)
 						</li>
 						<li>User approves the consent screen</li>
