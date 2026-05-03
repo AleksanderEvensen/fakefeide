@@ -336,20 +336,6 @@ const studentCourseExtra = j({
 	subjectRelations: "undervisning",
 });
 
-const facultyUniOrgExtra = j({
-	displayName: "Førsteamanuensis",
-	affiliation: ["member", "employee", "faculty"],
-	primaryAffiliation: "faculty",
-	title: ["Førsteamanuensis"],
-});
-const facultyCourseExtra = j({ active: true, displayName: "Foreleser", fsroles: ["LÆRER"] });
-
-const adminOrgExtra = j({
-	displayName: "Administrator",
-	affiliation: ["member", "employee"],
-	primaryAffiliation: "employee",
-});
-
 type Membership = typeof groupMemberships.$inferInsert;
 
 function buildMemberships(): Membership[] {
@@ -446,19 +432,10 @@ function buildMemberships(): Membership[] {
 			{ groupId: G.ks, userId: uid, basic: "member" as const },
 		]),
 
-		// ── Faculty Ole → University ────────────────────────────────────
-		{ groupId: G.eku, userId: USER.ole, basic: "admin", extra: facultyUniOrgExtra },
-		{ groupId: G.ifi, userId: USER.ole, basic: "member", extra: studentUniUnitExtra },
-		{ groupId: G.in1000, userId: USER.ole, basic: "owner", extra: facultyCourseExtra },
-		{ groupId: G.mat1100, userId: USER.ole, basic: "owner", extra: facultyCourseExtra },
-
-		// ── Admin Nils → School owner ───────────────────────────────────
-		{ groupId: G.sunnvik, userId: USER.nils, basic: "admin", extra: adminOrgExtra },
-
 		// ── Ad hoc groups ───────────────────────────────────────────────
 		{ groupId: G.adHocAlpha, userId: USER.isak, basic: "owner" },
 		{ groupId: G.adHocAlpha, userId: USER.julie, basic: "member" },
-		{ groupId: G.adHocBeta, userId: USER.ole, basic: "owner" },
+		{ groupId: G.adHocBeta, userId: USER.julie, basic: "owner" },
 		{ groupId: G.adHocBeta, userId: USER.isak, basic: "member" },
 	];
 }

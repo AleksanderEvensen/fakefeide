@@ -26,15 +26,11 @@ function continueOAuthFlowIfPending(): boolean {
 const ROLE_LABELS: Record<UserRole, string> = {
 	student: "Student",
 	teacher: "Teacher",
-	faculty: "Faculty",
-	admin: "Admin",
 };
 
 const ROLE_COLORS: Record<UserRole, string> = {
 	student: "bg-blue-100 text-blue-800",
 	teacher: "bg-green-100 text-green-800",
-	faculty: "bg-purple-100 text-purple-800",
-	admin: "bg-orange-100 text-orange-800",
 };
 
 function SignIn() {

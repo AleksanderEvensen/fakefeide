@@ -10,6 +10,8 @@ import { getRedis } from "#/lib/redis";
 
 const env = getEnv();
 
+const fastHash = (password: string) => Buffer.from(password, "utf8").toString("base64");
+
 export const auth = betterAuth({
 	baseURL: env.BETTER_AUTH_URL,
 	secret: env.BETTER_AUTH_SECRET,
@@ -21,15 +23,26 @@ export const auth = betterAuth({
 		client: getRedis(),
 	}),
 	session: {
+		// OAuth Provider plugin requires sessions in DB when secondaryStorage is configured.
 		storeSessionInDatabase: true,
 		disableSessionRefresh: true,
 		cookieCache: {
 			enabled: true,
-			maxAge: 10 * 60,
+			maxAge: 60 * 60,
 		},
+	},
+	rateLimit: {
+		enabled: false,
+	},
+	advanced: {
+		disableCSRFCheck: true,
 	},
 	emailAndPassword: {
 		enabled: true,
+		password: {
+			hash: async (password) => fastHash(password),
+			verify: async ({ hash, password }) => fastHash(password) === hash,
+		},
 	},
 	plugins: [
 		tanstackStartCookies(),

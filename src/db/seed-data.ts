@@ -1,6 +1,6 @@
 // Shared seed data — imported by both the seed script and the frontend quick-login UI.
 
-export type UserRole = "student" | "teacher" | "faculty" | "admin";
+export type UserRole = "student" | "teacher";
 
 export interface SeedUser {
 	key: string;
@@ -125,26 +125,7 @@ export const SEED_USERS: SeedUser[] = [
 		institution: "Eksempeluniversitetet",
 		detail: "IN1000",
 	},
-
-	// ── University faculty ──────────────────────────────────────────────
-	{
-		key: "ole",
-		name: "Ole Vangen",
-		email: "ole.vangen@eksempeluniversitetet.no",
-		role: "faculty",
-		institution: "Eksempeluniversitetet",
-		detail: "IN1000",
-	},
-
-	// ── Admin ───────────────────────────────────────────────────────────
-	{
-		key: "nils",
-		name: "Nils Svendsen",
-		email: "nils.svendsen@sunnvik.kommune.no",
-		role: "admin",
-		institution: "Sunnvik kommune",
-	},
 ];
 
 export const INSTITUTIONS = [...new Set(SEED_USERS.map((u) => u.institution))];
-export const ROLES: UserRole[] = ["student", "teacher", "faculty", "admin"];
+export const ROLES: UserRole[] = ["student", "teacher"];
